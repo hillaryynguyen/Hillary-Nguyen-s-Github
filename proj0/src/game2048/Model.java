@@ -93,10 +93,15 @@ public class Model {
      * */
     public static boolean emptySpaceExists(Board b) {
         // TODO: Fill in this function.
+
         int size = b.size();
-        for(int i = 0; i < size; i ++) {
-            for(int j = 0; j < size; j++) {
-                if(b.tile(i, j) == null) {
+
+        for (int row = 0; row < size; row ++) {
+
+            for (int col = 0; col < size; col++) {
+
+                if (b.tile(col, row) == null) {
+
                     return true;
                 }
             }
@@ -113,15 +118,15 @@ public class Model {
      */
     public static boolean maxTileExists(Board b) {
         // TODO: Fill in this function.
-        for(int i = 0; i < b.size(); i ++ ) {
-            for(int j = 0; j < b.size(); j ++ ) {
-                if(b.tile(i, j) != null && b.tile(i, j).value() == MAX_PIECE) {
+
+        for (int row = 0; row < b.size(); row++) {
+            for (int col = 0; col < b.size(); col++) {
+                Tile tile = b.tile(row, col);
+                if (tile != null && tile.value() == MAX_PIECE) {
                     return true;
                 }
             }
         }
-
-
         return false;
     }
 
@@ -133,12 +138,18 @@ public class Model {
      */
     public static boolean atLeastOneMoveExists(Board b) {
         // TODO: Fill in this function.
+
         if(emptySpaceExists(b)) return true;
-        for(int i = 0; i < b.size(); i ++) {
-            for(int j = 0; j < b.size(); j ++) {
-                boolean leftOrRight = j + 1 < b.size() && b.tile(i, j).value() == b.tile(i, j + 1).value();
-                boolean upOrDown = i + 1 < b.size() && b.tile(i, j).value() == b.tile(i + 1, j).value();
-                if(leftOrRight || upOrDown) {
+
+        for(int row = 0; row < b.size(); row ++) {
+
+            for(int col = 0; col < b.size(); col ++) {
+
+                boolean isAdjacentTileMatch = (row + 1 < b.size() && b.tile(row, col).value() == b.tile(row + 1, col).value()) ||
+                        (col + 1 < b.size() && b.tile(row, col).value() == b.tile(row, col + 1).value());
+
+                if (isAdjacentTileMatch) {
+
                     return true;
                 }
             }
@@ -161,15 +172,53 @@ public class Model {
      *    and the trailing tile does not.
      * */
     public void tilt(Side side) {
+        boolean changed;
+        changed = false;
+
         // TODO: Modify this.board (and if applicable, this.score) to account
         // for the tilt to the Side SIDE.
+        board.setViewingPerspective(side);
+        int size = board.size();
+        for (int col = 0; col < size; col ++ ) {
+            for (int row = size - 1; row >= 0; row--) {
+                Tile t = board.tile(col, row);
+                if (t != null) {
+                    // find nextPos which is null
+                    int nextPos = row + 1;
+                    while (nextPos < size) {
+                        Tile nextTile = board.tile(col, nextPos);
+                        if (board.tile(col, nextPos) == null) {
+                            break;
+                        }
+                        nextPos++;
+                    }
+                    // check if nextPos is a legal position
+                    if (nextPos < size) {
+                        board.move(col, nextPos, t);
+                        changed = true;
+                    }
+                }
 
+                if (row > 0) {
+                    Tile current = board.tile(col, row);
+                    Tile above = board.tile(col, row - 1);
+                    if (current != null && above != null && current.value() == above.value()) {
+                        board.move(col, row, above);
+                        score += above.value() * 2;
+                        changed = true;
+                    }
+                }
+            }
+        }
+        board.setViewingPerspective(Side.NORTH);
 
         checkGameOver();
     }
 
 
-    @Override
+
+
+        @Override
     public String toString() {
         Formatter out = new Formatter();
         out.format("%n[%n");
