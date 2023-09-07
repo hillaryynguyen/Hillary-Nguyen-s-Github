@@ -143,25 +143,28 @@ public class Model {
     public static boolean atLeastOneMoveExists(Board b) {
         // TODO: Fill in this function.
 
-        if(emptySpaceExists(b)) return true;
+        if (emptySpaceExists(b)) {
+            return true;
+        }
 
-        for(int row = 0; row < b.size(); row ++) {
+        // Check for adjacent tiles with the same value
+        for (int row = 0; row < b.size(); row++) {
+            for (int col = 0; col < b.size(); col++) {
+                Tile currentTile = b.tile(col, row);
 
-            for(int col = 0; col < b.size(); col ++) {
-                if(b.tile(col,row) == null) {
+                if (currentTile == null) {
                     return true;
                 }
 
-                boolean upOrDown = (row + 1 < b.size() && b.tile(row, col).value() == b.tile(row + 1, col).value());
-                boolean leftOrRight = (col + 1 < b.size() && b.tile(row, col).value() == b.tile(row, col + 1).value());
+                if (col + 1 < b.size() && currentTile.value() == b.tile(col + 1, row).value()) {
+                    return true;
+                }
 
-                if (upOrDown || leftOrRight) {
-
+                if (row + 1 < b.size() && currentTile.value() == b.tile(col, row + 1).value()) {
                     return true;
                 }
             }
         }
-
 
         return false;
     }
@@ -185,67 +188,60 @@ public class Model {
         // TODO: Modify this.board (and if applicable, this.score) to account
         // for the tilt to the Side SIDE.
         board.setViewingPerspective(side);
+
         int size = board.size();
 
-        for (int col = 0; col < size; col++) {
-            for (int row = size - 1; row >= 0; row--) {
-                Tile currentTile = board.tile(col, row);
+        for (int x = 0; x < size; x++) {
+            for (int p = size - 1; p >= 0; p--) {
+                Tile currentTile = board.tile(x, p);
 
                 if (currentTile != null) {
-                    int nextPos = findNextEmptyPosition(col, row);
+                    int nextPos = findNextEmptyPosition(board, x, p);
 
-                    if (nextPos > row) {
-                        board.move(col, nextPos, currentTile);
+                    if (nextPos != p) {
+                        board.move(x, nextPos, currentTile);
                         changed = true;
                     }
-                }
-            }
 
-            for (int row = 3; row > 0; row--) {
-                Tile currentTile = board.tile(col, row);
-                Tile nextTile = board.tile(col, row - 1);
-
-                if (currentTile != null && nextTile != null && currentTile.value() == nextTile.value()) {
-                    board.move(col, row, nextTile);
-                    score += currentTile.value() * 2;
-                    shiftTilesBehind(col, row - 1);
-                    changed = true;
+                    if (nextPos >= 0 && nextPos < p) {
+                        Tile nextTile = board.tile(x, nextPos);
+                        if (nextTile.value() == currentTile.value()) {
+                            board.move(x, p, nextTile);
+                            score += currentTile.value() * 2;
+                            shiftTilesDown(board, x, nextPos);
+                            changed = true;
+                        }
+                    }
                 }
             }
         }
 
         board.setViewingPerspective(Side.NORTH);
         checkGameOver();
-
     }
 
-        public int findNextEmptyPosition(int col, int row) {
-            int size = board.size();
-
-            for (int nextPos = row + 1; nextPos < size; nextPos++) {
-                Tile nextTile = board.tile(col, nextPos);
-
-                if (nextTile == null) {
-                    return nextPos;
-                }
-            }
-
-            return row;
-        }
-
-        public void shiftTilesBehind(int col, int startRow) {
-            for (int row = startRow; row >= 0; row--) {
-                Tile tile = board.tile(col, row);
-
-                if (tile == null) {
-                    break;
-                }
-
-                if (row < board.size() - 1) {
-                    board.move(col, row + 1, tile);
-                }
+    public int findNextEmptyPosition(Board board, int x, int p) {
+        int size = board.size();
+        for (int nextPos = p - 1; nextPos >= 0; nextPos--) {
+            if (board.tile(x, nextPos) == null) {
+                return nextPos;
             }
         }
+        return p;
+    }
+
+    public void shiftTilesDown(Board board, int x, int startRow) {
+        int size = board.size();
+        for (int row = startRow - 1; row >= 0; row--) {
+            Tile tile = board.tile(x, row);
+            if (tile == null) {
+                break;
+            }
+            if (startRow < size) {
+                board.move(x, row + 1, tile);
+            }
+        }
+    }
 
 
 
