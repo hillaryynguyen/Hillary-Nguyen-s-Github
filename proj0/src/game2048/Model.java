@@ -120,9 +120,13 @@ public class Model {
         // TODO: Fill in this function.
 
         for (int row = 0; row < b.size(); row++) {
+
             for (int col = 0; col < b.size(); col++) {
+
                 Tile tile = b.tile(row, col);
+
                 if (tile != null && tile.value() == MAX_PIECE) {
+
                     return true;
                 }
             }
@@ -144,11 +148,14 @@ public class Model {
         for(int row = 0; row < b.size(); row ++) {
 
             for(int col = 0; col < b.size(); col ++) {
+                if(b.tile(col,row) == null) {
+                    return true;
+                }
 
-                boolean isAdjacentTileMatch = (row + 1 < b.size() && b.tile(row, col).value() == b.tile(row + 1, col).value()) ||
-                        (col + 1 < b.size() && b.tile(row, col).value() == b.tile(row, col + 1).value());
+                boolean upOrDown = (row + 1 < b.size() && b.tile(row, col).value() == b.tile(row + 1, col).value());
+                boolean leftOrRight = (col + 1 < b.size() && b.tile(row, col).value() == b.tile(row, col + 1).value());
 
-                if (isAdjacentTileMatch) {
+                if (upOrDown || leftOrRight) {
 
                     return true;
                 }
@@ -179,46 +186,72 @@ public class Model {
         // for the tilt to the Side SIDE.
         board.setViewingPerspective(side);
         int size = board.size();
-        for (int col = 0; col < size; col ++ ) {
-            for (int row = size - 1; row >= 0; row--) {
-                Tile t = board.tile(col, row);
-                if (t != null) {
-                    // find nextPos which is null
-                    int nextPos = row + 1;
-                    while (nextPos < size) {
-                        Tile nextTile = board.tile(col, nextPos);
-                        if (board.tile(col, nextPos) == null) {
-                            break;
-                        }
-                        nextPos++;
-                    }
-                    // check if nextPos is a legal position
-                    if (nextPos < size) {
-                        board.move(col, nextPos, t);
-                        changed = true;
-                    }
-                }
 
-                if (row > 0) {
-                    Tile current = board.tile(col, row);
-                    Tile above = board.tile(col, row - 1);
-                    if (current != null && above != null && current.value() == above.value()) {
-                        board.move(col, row, above);
-                        score += above.value() * 2;
+        for (int col = 0; col < size; col++) {
+            for (int row = size - 1; row >= 0; row--) {
+                Tile currentTile = board.tile(col, row);
+
+                if (currentTile != null) {
+                    int nextPos = findNextEmptyPosition(col, row);
+
+                    if (nextPos > row) {
+                        board.move(col, nextPos, currentTile);
                         changed = true;
                     }
                 }
             }
-        }
-        board.setViewingPerspective(Side.NORTH);
 
+            for (int row = 3; row > 0; row--) {
+                Tile currentTile = board.tile(col, row);
+                Tile nextTile = board.tile(col, row - 1);
+
+                if (currentTile != null && nextTile != null && currentTile.value() == nextTile.value()) {
+                    board.move(col, row, nextTile);
+                    score += currentTile.value() * 2;
+                    shiftTilesBehind(col, row - 1);
+                    changed = true;
+                }
+            }
+        }
+
+        board.setViewingPerspective(Side.NORTH);
         checkGameOver();
+
     }
 
+        public int findNextEmptyPosition(int col, int row) {
+            int size = board.size();
+
+            for (int nextPos = row + 1; nextPos < size; nextPos++) {
+                Tile nextTile = board.tile(col, nextPos);
+
+                if (nextTile == null) {
+                    return nextPos;
+                }
+            }
+
+            return row;
+        }
+
+        public void shiftTilesBehind(int col, int startRow) {
+            for (int row = startRow; row >= 0; row--) {
+                Tile tile = board.tile(col, row);
+
+                if (tile == null) {
+                    break;
+                }
+
+                if (row < board.size() - 1) {
+                    board.move(col, row + 1, tile);
+                }
+            }
+        }
 
 
 
-        @Override
+
+
+    @Override
     public String toString() {
         Formatter out = new Formatter();
         out.format("%n[%n");
