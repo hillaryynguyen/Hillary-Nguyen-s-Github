@@ -189,63 +189,40 @@ public class Model {
         // for the tilt to the Side SIDE.
         board.setViewingPerspective(side);
 
-        int size = board.size();
-
-        for (int x = 0; x < size; x++) {
-            for (int p = size - 1; p >= 0; p--) {
-                Tile currentTile = board.tile(x, p);
-
-                if (currentTile != null) {
-                    int nextPos = findNextEmptyPosition(board, x, p);
-
-                    if (nextPos != p) {
-                        board.move(x, nextPos, currentTile);
-                        changed = true;
-                    }
-
-                    if (nextPos >= 0 && nextPos < p) {
-                        Tile nextTile = board.tile(x, nextPos);
-                        if (nextTile.value() == currentTile.value()) {
-                            board.move(x, p, nextTile);
-                            score += currentTile.value() * 2;
-                            shiftTilesDown(board, x, nextPos);
-                            changed = true;
+        for (int col = 0; col < board.size(); col++) {
+            boolean merged = false;
+            int limit = board.size();
+            for (int row = board.size() - 2; row >= 0; row--) {
+                Tile t = board.tile(col, row);
+                if (board.tile(col, row) != null) {
+                    int current = row;
+                    if (current < limit) {
+                        for (int yy = current; yy < limit; yy++) {
+                            if (board.tile(col, yy) == null) {
+                                current = yy;
+                            } else if (board.tile(col, yy) != null && t.value() == board.tile(col, yy).value()) {
+                                current = yy;
+                            }
                         }
                     }
+
+                    if (merged) {
+                        merged = board.move(col, current, t);
+                    } else {
+                        merged = board.move(col, current, t);
+                        if (merged) {
+                            score += (2 * t.value());
+                            limit = current;
+                        }
+                    }
+                    changed = true;
                 }
             }
         }
-
         board.setViewingPerspective(Side.NORTH);
         checkGameOver();
-    }
 
-    public int findNextEmptyPosition(Board board, int x, int p) {
-        int size = board.size();
-        for (int nextPos = p - 1; nextPos >= 0; nextPos--) {
-            if (board.tile(x, nextPos) == null) {
-                return nextPos;
-            }
         }
-        return p;
-    }
-
-    public void shiftTilesDown(Board board, int x, int startRow) {
-        int size = board.size();
-        for (int row = startRow - 1; row >= 0; row--) {
-            Tile tile = board.tile(x, row);
-            if (tile == null) {
-                break;
-            }
-            if (startRow < size) {
-                board.move(x, row + 1, tile);
-            }
-        }
-    }
-
-
-
-
 
     @Override
     public String toString() {
