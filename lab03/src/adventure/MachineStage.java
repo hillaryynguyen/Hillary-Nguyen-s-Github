@@ -82,12 +82,12 @@ public class MachineStage implements AdventureStage {
         if(a>b) {
             return a;
         }
-        if(b>a) {
+        if (b>a) {
             return b;
         }
-        elif
-            return b;
-        }
+        else
+            return a;
+    }
 
     public static int mysteryAdd(int a, int b) {
         return a+b;
