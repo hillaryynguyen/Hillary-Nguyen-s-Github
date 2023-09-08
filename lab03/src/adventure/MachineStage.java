@@ -79,14 +79,14 @@ public class MachineStage implements AdventureStage {
     }
 
     public static int mysteryMax(int a, int b) {
-        if(a>b) {
+        if(a > b) {
             return a;
         }
-        if (b>a) {
+        if(b > a) {
             return b;
         }
-        else
-            return a;
+        elif
+            return b;
     }
 
     public static int mysteryAdd(int a, int b) {
