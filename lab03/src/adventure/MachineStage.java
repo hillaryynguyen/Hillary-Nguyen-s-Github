@@ -85,7 +85,7 @@ public class MachineStage implements AdventureStage {
         if(b>a) {
             return b;
         }
-        else
+        elif
             return b;
         }
 
