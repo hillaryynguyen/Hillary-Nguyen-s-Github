@@ -1,7 +1,6 @@
 package adventure;
 
 import edu.princeton.cs.algs4.In;
-import org.junit.jupiter.engine.descriptor.TestInstanceLifecycleUtils;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -85,7 +84,7 @@ public class MachineStage implements AdventureStage {
         if(b > a) {
             return b;
         }
-        elif
+        else
             return b;
     }
 
@@ -119,7 +118,7 @@ public class MachineStage implements AdventureStage {
         int i = 0;
         int sum = 0;
         while (i < x.length) {
-            sum = sum + mysteryAdd(sum, x[i]);
+            sum = mysteryAdd(sum, x[i]);
             i = i + 1;
         }
         return sum;
