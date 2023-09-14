@@ -1,12 +1,11 @@
-import java.util.LinkedList;
 import java.util.List;
 import java.util.ArrayList;
 
 public class LinkedListDeque<T> implements Deque<T> {
     private class Node {
-        public T item;
-        public Node prev;
-        public Node next;
+        T item;
+        Node prev;
+        Node next;
 
         public Node(T i, Node p, Node n) {
             item = i;
@@ -74,16 +73,16 @@ public class LinkedListDeque<T> implements Deque<T> {
 
     @Override
     public T removeLast() {
-         if (isEmpty()) {
-             return null;
-         }
+        if (isEmpty()) {
+            return null;
+        }
 
-         T removedItem = sentinel.prev.item;
-         sentinel.prev = sentinel.prev.prev;
-         sentinel.prev.next = sentinel;
-         size--;
+        T removedItem = sentinel.prev.item;
+        sentinel.prev = sentinel.prev.prev;
+        sentinel.prev.next = sentinel;
+        size--;
 
-         return removedItem;
+        return removedItem;
     }
 
     @Override
@@ -91,12 +90,10 @@ public class LinkedListDeque<T> implements Deque<T> {
         if (index < 0 || index >= size) {
             return null;
         }
-
         Node current = sentinel.next;
         for (int i = 0; i < index; i++) {
             current = current.next;
         }
-
         return current.item;
     }
 
@@ -122,7 +119,6 @@ public class LinkedListDeque<T> implements Deque<T> {
         sentinel.next = sentinel;
         size = 0;
     }
-
 }
 
 

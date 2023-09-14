@@ -217,19 +217,21 @@ public class LinkedListDequeTest {
         deque.addLast("B");
         deque.addLast("C");
 
-        assertThat(deque.removeFirst()).isEqualTo("C");
+        assertThat(deque.removeLast()).isEqualTo("C");
         assertThat(deque.toList()).containsExactly("A", "B");
         assertThat(deque.size()).isEqualTo(2);
 
-        assertThat(deque.removeFirst()).isEqualTo("B");
+        assertThat(deque.removeLast()).isEqualTo("B");
         assertThat(deque.toList()).containsExactly("A");
         assertThat(deque.size()).isEqualTo(1);
 
-        assertThat(deque.removeFirst()).isEqualTo("A");
+        assertThat(deque.removeLast()).isEqualTo("A");
         assertThat(deque.toList()).isEmpty();
         assertThat(deque.size()).isEqualTo(0);
 
-        assertThat(deque.removeFirst()).isNull();
+        assertThat(deque.removeLast()).isNull();
+
+
     }
 
 }
