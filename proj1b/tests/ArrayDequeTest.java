@@ -56,7 +56,32 @@ public class ArrayDequeTest {
     }
 
     @Test
+    public void testRemoveFirstEmptyDeque() {
+        ArrayDeque<Integer> deque = new ArrayDeque<>();
+        Integer removedItem = deque.removeFirst();
+        assertThat(removedItem).isNull();
+        assertThat(deque.size()).isEqualTo(0);
+    }
+
+    @Test
     public void testRemoveLast() {
+        ArrayDeque<Integer> deque = new ArrayDeque<>();
+        deque.addLast(10);
+        int removedItem = deque.removeLast();
+        assertThat(removedItem).isEqualTo(10);
+        assertThat(deque.size()).isEqualTo(0);
+    }
+
+    @Test
+    public void testRemoveLastEmptyDeque() {
+        ArrayDeque<Integer> deque = new ArrayDeque<>();
+        Integer removedItem = deque.removeLast();
+        assertThat(removedItem).isNull();
+        assertThat(deque.size()).isEqualTo(0);
+    }
+
+    @Test
+    public void testRemoveLastLeavingEmptyDeque() {
         ArrayDeque<Integer> deque = new ArrayDeque<>();
         deque.addLast(10);
         int removedItem = deque.removeLast();
@@ -83,6 +108,12 @@ public class ArrayDequeTest {
         assertThat(deque.get(0)).isEqualTo(10);
         assertThat(deque.get(1)).isEqualTo(20);
         assertThat(deque.get(2)).isEqualTo(30);
+    }
+
+    @Test
+    public void testGetEmptyDeque() {
+        ArrayDeque<Integer> deque = new ArrayDeque<>();
+        assertThat(deque.get(0)).isNull();
     }
 
     @Test
