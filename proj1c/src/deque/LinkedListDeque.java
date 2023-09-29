@@ -1,9 +1,6 @@
 package deque;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 public class LinkedListDeque<T> implements Deque<T> {
     private class Node {
@@ -159,33 +156,20 @@ public class LinkedListDeque<T> implements Deque<T> {
         if (this == other) {
             return true;
         }
-        if (other == null || getClass() != other.getClass()) {
-            return false;
-        }
-        LinkedListDeque<?> that = (LinkedListDeque<?>) other;
-
-        // Check if the sizes are equal
-        if (this.size() != that.size()) {
-            return false;
-        }
-
-        // Check if the elements are equal
-        Iterator<T> thisIterator = this.iterator();
-        Iterator<?> thatIterator = that.iterator();
-
-        while (thisIterator.hasNext() && thatIterator.hasNext()) {
-            T thisItem = thisIterator.next();
-            Object thatItem = thatIterator.next();
-
-            if (thisItem == null) {
-                if (thatItem != null) {
-                    return false;
-                }
-            } else if (!thisItem.equals(thatItem)) {
+        if (other instanceof LinkedListDeque secList) {
+            if (this.size() != secList.size()) {
                 return false;
             }
+            Iterator<T> thisIterator = this.iterator();
+            Iterator<T> otherIterator = secList.iterator();
+            while (thisIterator.hasNext()) {
+                T curr = thisIterator.next();
+                T otherValue = otherIterator.next();
+                if (curr != otherValue) {
+                    return false;
+                }
+            }
         }
-
         return true;
     }
 

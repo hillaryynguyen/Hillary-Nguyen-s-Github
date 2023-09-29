@@ -149,31 +149,25 @@ public class ArrayDeque<T> implements Deque<T> {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true; // Same object reference, they are equal
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
         }
-
-        if (!(obj instanceof ArrayDeque)) {
-            return false; // Not an instance of ArrayDeque, cannot be equal
-        }
-
-        ArrayDeque<?> other = (ArrayDeque<?>) obj;
-
-        if (this.size() != other.size()) {
-            return false; // Different sizes, cannot be equal
-        }
-
-        Iterator<?> thisIterator = this.iterator();
-        Iterator<?> otherIterator = other.iterator();
-
-        while (thisIterator.hasNext()) {
-            if (!Objects.equals(thisIterator.next(), otherIterator.next())) {
-                return false; // Elements at the same position are not equal
+        if (other instanceof ArrayDeque secList) {
+            if (this.size() != secList.size()) {
+                return false;
+            }
+            Iterator<T> thisIterator = this.iterator();
+            Iterator<T> otherIterator = secList.iterator();
+            while (thisIterator.hasNext()) {
+                T curr = thisIterator.next();
+                T otherValue = otherIterator.next();
+                if (curr != otherValue) {
+                    return false;
+                }
             }
         }
-
-        return true; // All elements are equal
+        return true;
     }
 
     @Override
