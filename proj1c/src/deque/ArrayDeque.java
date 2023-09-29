@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 public class ArrayDeque<T> implements Deque<T> {
     private static final int INITIAL_CAPACITY = 8;
@@ -148,38 +149,31 @@ public class ArrayDeque<T> implements Deque<T> {
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (this == other) {
-            return true;
-        }
-        if (other == null || getClass() != other.getClass()) {
-            return false;
-        }
-        ArrayDeque<?> that = (ArrayDeque<?>) other;
-
-        // Check if the sizes are equal
-        if (this.size() != that.size()) {
-            return false;
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true; // Same object reference, they are equal
         }
 
-        // Check if the elements are equal
-        Iterator<T> thisIterator = this.iterator();
-        Iterator<?> thatIterator = that.iterator();
+        if (!(obj instanceof ArrayDeque)) {
+            return false; // Not an instance of ArrayDeque, cannot be equal
+        }
 
-        while (thisIterator.hasNext() && thatIterator.hasNext()) {
-            T thisItem = thisIterator.next();
-            Object thatItem = thatIterator.next();
+        ArrayDeque<?> other = (ArrayDeque<?>) obj;
 
-            if (thisItem == null) {
-                if (thatItem != null) {
-                    return false;
-                }
-            } else if (!thisItem.equals(thatItem)) {
-                return false;
+        if (this.size() != other.size()) {
+            return false; // Different sizes, cannot be equal
+        }
+
+        Iterator<?> thisIterator = this.iterator();
+        Iterator<?> otherIterator = other.iterator();
+
+        while (thisIterator.hasNext()) {
+            if (!Objects.equals(thisIterator.next(), otherIterator.next())) {
+                return false; // Elements at the same position are not equal
             }
         }
 
-        return true;
+        return true; // All elements are equal
     }
 
     @Override

@@ -13,6 +13,54 @@ public class MaxArrayDeque<T> extends ArrayDeque<T> {
     }
 
     // Other methods from your MaxArrayDeque class
+    public T max() {
+        if (isEmpty()) {
+            return null;
+        }
+
+        T maxElement = getFirst();
+
+        for (T element : this) {
+            if (comparator.compare(element, maxElement) > 0) {
+                maxElement = element;
+            }
+        }
+        return maxElement;
+    }
+
+    public T max(Comparator<T> c) {
+        if (isEmpty()) {
+            return null;
+        }
+
+        T maxElement = getFirst();
+
+        for (T element : this) {
+            if(c.compare(element, maxElement) > 0) {
+                maxElement = element;
+            }
+        }
+        return maxElement;
+    }
+
+    public T get(int index) {
+        if (index < 0 || index >= size()) {
+            throw new IndexOutOfBoundsException("Index is out of bounds.");
+        }
+
+        if (index < 0) {
+            index += size();
+        }
+
+        int currentIndex = 0;
+        for (T element : this) {
+            if (currentIndex == index) {
+                return element;
+            }
+            currentIndex++;
+        }
+        return null;
+    }
 
     // Implement the iterator() method to make MaxArrayDeque iterable
     @Override
