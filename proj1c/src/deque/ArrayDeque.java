@@ -150,7 +150,7 @@ public class ArrayDeque<T> implements Deque<T> {
         if (this == other) {
             return true;
         }
-        if (other instanceof ArrayDeque secList) {
+        if (other instanceof Deque secList) {
             if (this.size() != secList.size()) {
                 return false;
             }

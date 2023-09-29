@@ -151,7 +151,7 @@ public class LinkedListDeque<T> implements Deque<T> {
         if (this == other) {
             return true;
         }
-        if (other instanceof LinkedListDeque secList) {
+        if (other instanceof Deque secList) {
             if (this.size() != secList.size()) {
                 return false;
             }
