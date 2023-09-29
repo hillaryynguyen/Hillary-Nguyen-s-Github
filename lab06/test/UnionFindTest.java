@@ -84,6 +84,38 @@ public class UnionFindTest {
      * Write your own tests below here to verify for correctness. The given tests are not comprehensive.
      */
 
+    @Test
+    public void test5() {
+        UnionFind uf = new UnionFind(6);
+        uf.union(0,1);
+        uf.union(2,3);
+        uf.union(0,2);
+
+        assertThat(uf.find(0)).isEqualTo(3);
+        assertThat(uf.find(1)).isEqualTo(3);
+        assertThat(uf.find(2)).isEqualTo(3);
+        assertThat(uf.find(3)).isEqualTo(3);
+
+        assertThat(uf.sizeOf(0)).isEqualTo(4);
+        assertThat(uf.sizeOf(4)).isEqualTo(1);
+    }
+
+    @Test
+    public void test6() {
+        UnionFind uf = new UnionFind(5);
+        uf.union(0,1);
+        uf.union(2,3);
+        uf.union(0,2);
+
+        uf.union(1, 3);
+
+        assertThat(uf.find(0)).isEqualTo(3);
+        assertThat(uf.find(1)).isEqualTo(3);
+        assertThat(uf.find(2)).isEqualTo(3);
+        assertThat(uf.find(3)).isEqualTo(3);
+        assertThat(uf.find(4)).isEqualTo(4);
+    }
+
 }
 
 

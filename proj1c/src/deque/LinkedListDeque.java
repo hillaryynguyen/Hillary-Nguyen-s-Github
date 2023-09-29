@@ -121,9 +121,7 @@ public class LinkedListDeque<T> implements Deque<T> {
         size = 0;
     }
 
-    public interface Deque<T> extends Iterable<T> {
 
-    }
 
     // Implement the iterator() method
     public Iterator<T> iterator() {
@@ -131,22 +129,19 @@ public class LinkedListDeque<T> implements Deque<T> {
     }
 
     private class LinkedListDequeIterator implements Iterator<T> {
-        private Node current;
+        private int current;
 
         public LinkedListDequeIterator() {
-            current = sentinel.next;
+            current = 0;
         }
 
         public boolean hasNext() {
-            return current != sentinel;
+            return current < size;
         }
 
         public T next() {
-            if (!hasNext()) {
-                throw new NoSuchElementException();
-            }
-            T item = current.item;
-            current = current.next;
+            T item = get(current);
+            current++;
             return item;
         }
     }

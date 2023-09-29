@@ -1,6 +1,5 @@
 package gh2;
 
-import java.util.LinkedList;
 
 import deque.ArrayDeque;
 import deque.Deque;
@@ -21,7 +20,7 @@ public class GuitarString {
     /* Create a guitar string of the given frequency.  */
     public GuitarString(double frequency) {
         buffer = new ArrayDeque<>();
-        int cap = (int) Math.round(SR/frequency);
+        int cap = (int) Math.round(SR / frequency);
         for (int x = 0; x < cap; x++) {
             buffer.addFirst(0.0);
         }

@@ -36,7 +36,7 @@ public class MaxArrayDeque<T> extends ArrayDeque<T> {
         T maxElement = getFirst();
 
         for (T element : this) {
-            if(c.compare(element, maxElement) > 0) {
+            if (c.compare(element, maxElement) > 0) {
                 maxElement = element;
             }
         }
@@ -86,7 +86,7 @@ public class MaxArrayDeque<T> extends ArrayDeque<T> {
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
-            T item = (T)toArray()[currentIndex];
+            T item = (T) toArray()[currentIndex];
             currentIndex++;
             return item;
         }

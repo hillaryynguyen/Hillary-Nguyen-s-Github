@@ -3,8 +3,8 @@ package deque;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Objects;
+//import java.util.NoSuchElementException;
+//import java.util.Objects;
 
 public class ArrayDeque<T> implements Deque<T> {
     private static final int INITIAL_CAPACITY = 8;
@@ -139,10 +139,7 @@ public class ArrayDeque<T> implements Deque<T> {
         }
 
         public T next() {
-            if (!hasNext()) {
-                throw new NoSuchElementException();
-            }
-            T item = items[(nextFirst + 1 + currentIndex) % items.length];
+            T item = get(currentIndex);
             currentIndex++;
             return item;
         }
@@ -172,17 +169,7 @@ public class ArrayDeque<T> implements Deque<T> {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("[");
-        Iterator<T> iterator = iterator();
-        while (iterator.hasNext()) {
-            T item = iterator.next();
-            sb.append(item);
-            if (iterator.hasNext()) {
-                sb.append(", ");
-            }
-        }
-        sb.append("]");
-        return sb.toString();
+        return this.toList().toString();
     }
 }
 
