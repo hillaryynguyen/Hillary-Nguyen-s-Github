@@ -37,17 +37,18 @@ public class Percolation {
             if (row == gridSize - 1) {
                 uf.union(siteIndex, virtualBottomSite);
             }
+
             if (row > 0 && isOpen(row - 1, col)) {
-                uf.union(siteIndex, siteIndex - gridSize);
+                uf.union(siteIndex, (row - 1) * gridSize + col);
             }
             if (row < gridSize - 1 && isOpen(row + 1, col)) {
-                uf.union(siteIndex, siteIndex + gridSize);
+                uf.union(siteIndex, (row + 1) * gridSize + col);
             }
             if (col > 0 && isOpen(row, col - 1)) {
-                uf.union(siteIndex, siteIndex - 1);
+                uf.union(siteIndex, row * gridSize + col - 1);
             }
-            if (col < gridSize - 1  && isOpen(row, col + 1)) {
-                uf.union(siteIndex, siteIndex + 1);
+            if (col < gridSize - 1 && isOpen(row, col + 1)) {
+                uf.union(siteIndex, row * gridSize + col + 1);
             }
         }
     }
@@ -72,8 +73,7 @@ public class Percolation {
     }
 
     public boolean percolates() {
-        return uf.connected(virtualTopSite, virtualBottomSite)
-                && uf.find(virtualTopSite) != uf.find(virtualBottomSite);
+        return uf.connected(virtualTopSite, virtualBottomSite);
     }
 
 }
