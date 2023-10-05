@@ -64,7 +64,7 @@ public class Percolation {
             throw new IllegalArgumentException("Row and col indices are out of bounds");
         }
         int siteIndex = row * gridSize + col;
-        return isOpen(row, col) && uf.connected(siteIndex, virtualTopSite);
+        return isOpen(row, col) && uf.connected(siteIndex, virtualTopSite) && !uf.connected(siteIndex, virtualBottomSite);
     }
 
     public int numberOfOpenSites() {
@@ -72,7 +72,7 @@ public class Percolation {
     }
 
     public boolean percolates() {
-        return uf.connected(virtualTopSite, virtualBottomSite);
+        return uf.connected(virtualTopSite, virtualBottomSite) && !uf.connected(virtualTopSite, virtualBottomSite);
     }
 
 }
