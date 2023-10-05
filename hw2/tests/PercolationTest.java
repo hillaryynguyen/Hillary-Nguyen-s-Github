@@ -46,4 +46,44 @@ public class PercolationTest {
         //method to test Percolation class
     }
 
+    @Test
+    public void testPercolatesWithSingleOpenSite() {
+        int N = 3;
+        Percolation p = new Percolation(N);
+        p.open(1, 1);
+        assertThat(p.percolates()).isFalse(); // Only one open site, should not percolate
+    }
+
+    @Test
+    public void testPercolatesWithFullGrid() {
+        int N = 4;
+        Percolation p = new Percolation(N);
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                p.open(i, j);
+            }
+        }
+        assertThat(p.percolates()).isTrue(); // Full grid should percolate
+    }
+
+    @Test
+    public void testPercolatesWithBlockedPath() {
+        int N = 3;
+        Percolation p = new Percolation(N);
+        p.open(0, 1);
+        p.open(1, 1);
+        p.open(2, 1);
+        assertThat(p.percolates()).isFalse(); // Path is blocked
+    }
+
+    @Test
+    public void testPercolatesWithOpenPath() {
+        int N = 3;
+        Percolation p = new Percolation(N);
+        p.open(0, 1);
+        p.open(1, 1);
+        p.open(2, 1);
+        p.open(2, 2);
+        assertThat(p.percolates()).isTrue(); // Path is open
+    }
 }
