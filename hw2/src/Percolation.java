@@ -29,12 +29,12 @@ public class Percolation {
             grid[row][col] = true;
             openSites++;
 
-            int siteIndex = (row) * gridSize + col + 1;
+            int siteIndex = (row) * gridSize + col;
 
             if (row == 0) {
                 uf.union(siteIndex, virtualTopSite);
             }
-            if (row == gridSize -1) {
+            if (row == gridSize - 1) {
                 uf.union(siteIndex, virtualBottomSite);
             }
             if (row > 0 && isOpen(row - 1, col)) {
@@ -46,7 +46,7 @@ public class Percolation {
             if (col > 0 && isOpen(row, col - 1)) {
                 uf.union(siteIndex, siteIndex - 1);
             }
-            if (col < gridSize -1  && isOpen(row, col + 1)) {
+            if (col < gridSize - 1  && isOpen(row, col + 1)) {
                 uf.union(siteIndex, siteIndex + 1);
             }
         }
@@ -63,8 +63,8 @@ public class Percolation {
         if (row < 0 || row >= gridSize || col < 0 || col >= gridSize) {
             throw new IllegalArgumentException("Row and col indices are out of bounds");
         }
-        int siteIndex = row * gridSize + col + 1;
-        return isOpen(row,col) && uf.connected(siteIndex, virtualTopSite);
+        int siteIndex = row * gridSize + col;
+        return isOpen(row, col) && uf.connected(siteIndex, virtualTopSite);
     }
 
     public int numberOfOpenSites() {
