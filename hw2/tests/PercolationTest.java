@@ -1,5 +1,4 @@
 import org.junit.jupiter.api.Test;
-
 import static com.google.common.truth.Truth.assertThat;
 
 public class PercolationTest {
@@ -73,8 +72,11 @@ public class PercolationTest {
         p.open(0, 1);
         p.open(1, 1);
         p.open(2, 1);
+
+
         assertThat(p.percolates()).isFalse(); // Path is blocked
     }
+
 
     @Test
     public void testPercolatesWithOpenPath() {

@@ -1,35 +1,39 @@
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
-    private boolean[][] grid;
-    private int openSites;
+    private boolean[] openSites;
+    private int openSitesCount;
     private final int gridSize;
     private final WeightedQuickUnionUF uf;
     private final int virtualTopSite;
     private final int virtualBottomSite;
-
 
     public Percolation(int N) {
         if (N <= 0) {
             throw new IllegalArgumentException("N must be greater than 0.");
         }
         gridSize = N;
-        grid = new boolean[N][N];
-        openSites = 0;
+        openSites = new boolean[N * N];
+        openSitesCount = 0;
         uf = new WeightedQuickUnionUF(N * N + 2);
-        virtualTopSite = 0;
+        virtualTopSite = N * N;
         virtualBottomSite = N * N + 1;
+
+        // Connect virtual top and bottom sites to their respective rows
+        for (int col = 0; col < N; col++) {
+            uf.union(virtualTopSite, col);
+            uf.union(virtualBottomSite, (N - 1) * N + col);
+        }
     }
 
     public void open(int row, int col) {
-        if (row < 0 || row >= gridSize || col < 0 || col >= gridSize) {
-            throw new IllegalArgumentException("Row and col indices are out of bounds");
-        }
-        if (!grid[row][col]) {
-            grid[row][col] = true;
-            openSites++;
+        validateIndices(row, col);
 
-            int siteIndex = (row) * gridSize + col;
+        int siteIndex = getSiteIndex(row, col);
+
+        if (!openSites[siteIndex]) {
+            openSites[siteIndex] = true;
+            openSitesCount++;
 
             if (row == 0) {
                 uf.union(siteIndex, virtualTopSite);
@@ -38,42 +42,68 @@ public class Percolation {
                 uf.union(siteIndex, virtualBottomSite);
             }
 
-            if (row > 0 && isOpen(row - 1, col)) {
-                uf.union(siteIndex, (row - 1) * gridSize + col);
-            }
-            if (row < gridSize - 1 && isOpen(row + 1, col)) {
-                uf.union(siteIndex, (row + 1) * gridSize + col);
-            }
-            if (col > 0 && isOpen(row, col - 1)) {
-                uf.union(siteIndex, row * gridSize + col - 1);
-            }
-            if (col < gridSize - 1 && isOpen(row, col + 1)) {
-                uf.union(siteIndex, row * gridSize + col + 1);
+            int[] dx = { -1, 1, 0, 0 };
+            int[] dy = { 0, 0, -1, 1 };
+
+            for (int i = 0; i < 4; i++) {
+                int newRow = row + dx[i];
+                int newCol = col + dy[i];
+                if (isValid(newRow, newCol) && isOpen(newRow, newCol)) {
+                    int neighborIndex = getSiteIndex(newRow, newCol);
+                    uf.union(siteIndex, neighborIndex);
+                }
             }
         }
     }
 
+
     public boolean isOpen(int row, int col) {
-        if (row < 0 || row >= gridSize || col < 0 || col >= gridSize) {
-            throw new IllegalArgumentException("Row and col indices are out of bounds.");
-        }
-        return grid[row][col];
+        validateIndices(row, col);
+        return openSites[getSiteIndex(row, col)];
     }
 
     public boolean isFull(int row, int col) {
-        if (row < 0 || row >= gridSize || col < 0 || col >= gridSize) {
-            throw new IllegalArgumentException("Row and col indices are out of bounds");
-        }
-        int siteIndex = row * gridSize + col;
+        validateIndices(row, col);
+        int siteIndex = getSiteIndex(row, col);
         return isOpen(row, col) && uf.connected(siteIndex, virtualTopSite);
     }
 
     public int numberOfOpenSites() {
-        return openSites;
+        return openSitesCount;
     }
 
     public boolean percolates() {
         return uf.connected(virtualTopSite, virtualBottomSite);
     }
 
+    private int getSiteIndex(int row, int col) {
+        return row * gridSize + col;
+    }
+
+    private void connectToNeighbors(int row, int col) {
+        int siteIndex = getSiteIndex(row, col);
+
+        if (row > 0 && isOpen(row - 1, col)) {
+            uf.union(siteIndex, getSiteIndex(row - 1, col));
+        }
+        if (row < gridSize - 1 && isOpen(row + 1, col)) {
+            uf.union(siteIndex, getSiteIndex(row + 1, col));
+        }
+        if (col > 0 && isOpen(row, col - 1)) {
+            uf.union(siteIndex, getSiteIndex(row, col - 1));
+        }
+        if (col < gridSize - 1 && isOpen(row, col + 1)) {
+            uf.union(siteIndex, getSiteIndex(row, col + 1));
+        }
+    }
+
+    private void validateIndices(int row, int col) {
+        if (row < 0 || row >= gridSize || col < 0 || col >= gridSize) {
+            throw new IllegalArgumentException("Row and col indices are out of bounds.");
+        }
+    }
+
+    private boolean isValid(int row, int col) {
+        return row >= 0 && row < gridSize && col >= 0 && col < gridSize;
+    }
 }
