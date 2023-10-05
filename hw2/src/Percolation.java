@@ -2,7 +2,6 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 
 public class Percolation {
-    // TODO: Add any necessary instance variables.
     private boolean[][] grid;
     private int openSites;
     private final int gridSize;
@@ -11,7 +10,6 @@ public class Percolation {
     private final int virtualBottomSite;
 
     public Percolation(int N) {
-        // TODO: Fill in this constructor.
         if (N <= 0) {
             throw new IllegalArgumentException("N must be greater than 0.");
         }
@@ -24,8 +22,6 @@ public class Percolation {
     }
 
     public void open(int row, int col) {
-        // TODO: Fill in this method.
-
         if (row < 0 || row >= gridSize || col < 0 || col >= gridSize) {
             throw new IllegalArgumentException("Row and col indices are out of bounds");
         }
@@ -57,7 +53,6 @@ public class Percolation {
     }
 
     public boolean isOpen(int row, int col) {
-        // TODO: Fill in this method.
         if (row < 0 || row >= gridSize || col < 0 || col >= gridSize) {
             throw new IllegalArgumentException("Row and col indices are out of bounds.");
         }
@@ -65,24 +60,19 @@ public class Percolation {
     }
 
     public boolean isFull(int row, int col) {
-        // TODO: Fill in this method.
         if (row < 0 || row >= gridSize || col < 0 || col >= gridSize) {
             throw new IllegalArgumentException("Row and col indices are out of bounds");
         }
-        return isOpen(row,col) && uf.connected(row * gridSize + col + 1, virtualTopSite);
+        int siteIndex = row * gridSize + col + 1;
+        return isOpen(row,col) && uf.connected(siteIndex, virtualTopSite);
     }
 
     public int numberOfOpenSites() {
-        // TODO: Fill in this method.
         return openSites;
     }
 
     public boolean percolates() {
-        // TODO: Fill in this method.
         return uf.connected(virtualTopSite, virtualBottomSite);
     }
-
-    // TODO: Add any useful helper methods (we highly recommend this!).
-    // TODO: Remove all TODO comments before submitting.
 
 }
