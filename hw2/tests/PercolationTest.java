@@ -43,6 +43,7 @@ public class PercolationTest {
     @Test
     public void yourTestHere() {
         // TODO: write some more tests
+        //method to test Percolation class
     }
 
 }

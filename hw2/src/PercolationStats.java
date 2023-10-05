@@ -15,12 +15,8 @@ public class PercolationStats {
         for (int i = 0; i < T; i += 1) {
             Percolation p = new Percolation(N);
             while (!p.percolates()) {
-                /*int randRow = StdRandom.uniform(N);
+                int randRow = StdRandom.uniform(N);
                 int randCol = StdRandom.uniform(N);
-                p.open(randRow, randCol);*/
-
-                int randRow = StdRandom.uniform(1, N + 1);
-                int randCol = StdRandom.uniform(1, N + 1);
                 p.open(randRow, randCol);
             }
             ratio[i] = ((double) p.numberOfOpenSites()) / (N * N);
