@@ -5,6 +5,7 @@ public class Percolation {
     private int openSitesCount;
     private final int gridSize;
     private final WeightedQuickUnionUF uf;
+    private final WeightedQuickUnionUF fullCheckUf;
     private final int virtualTopSite;
     private final int virtualBottomSite;
 
@@ -17,6 +18,7 @@ public class Percolation {
         openSites = new boolean[N * N];
         openSitesCount = 0;
         uf = new WeightedQuickUnionUF(N * N + 2);
+        fullCheckUf = new WeightedQuickUnionUF(N * N + 1); // Exclude virtualBottomSite
         virtualTopSite = N * N;
         virtualBottomSite = N * N + 1;
 
@@ -25,17 +27,15 @@ public class Percolation {
         for (int col = 0; col < N; col++) {
             uf.union(virtualTopSite, col);
             uf.union(virtualBottomSite, (N - 1) * N + col);
+            fullCheckUf.union(virtualTopSite, col);
+
         }
     }
 
 
     public void open(int row, int col) {
         validateIndices(row, col);
-
-
         int siteIndex = getSiteIndex(row, col);
-
-
         if (!openSites[siteIndex]) {
             openSites[siteIndex] = true;
             openSitesCount++;
@@ -43,6 +43,8 @@ public class Percolation {
 
             if (row == 0) {
                 uf.union(siteIndex, virtualTopSite);
+                fullCheckUf.union(siteIndex, virtualTopSite);
+
             }
             if (row == gridSize - 1) {
                 uf.union(siteIndex, virtualBottomSite);
@@ -59,13 +61,12 @@ public class Percolation {
                 if (isValid(newRow, newCol) && isOpen(newRow, newCol)) {
                     int neighborIndex = getSiteIndex(newRow, newCol);
                     uf.union(siteIndex, neighborIndex);
+                    fullCheckUf.union(siteIndex, neighborIndex);
+
                 }
             }
         }
     }
-
-
-
 
     public boolean isOpen(int row, int col) {
         validateIndices(row, col);
@@ -76,7 +77,7 @@ public class Percolation {
     public boolean isFull(int row, int col) {
         validateIndices(row, col);
         int siteIndex = getSiteIndex(row, col);
-        return isOpen(row, col) && uf.connected(siteIndex, virtualTopSite);
+        return isOpen(row, col) && fullCheckUf.connected(siteIndex, virtualTopSite);
     }
 
 
@@ -92,23 +93,6 @@ public class Percolation {
 
     private int getSiteIndex(int row, int col) {
         return row * gridSize + col;
-    }
-
-    private void connectToNeighbors(int row, int col) {
-        int siteIndex = getSiteIndex(row, col);
-
-        if (row > 0 && isOpen(row - 1, col)) {
-            uf.union(siteIndex, getSiteIndex(row - 1, col));
-        }
-        if (row < gridSize - 1 && isOpen(row + 1, col)) {
-            uf.union(siteIndex, getSiteIndex(row + 1, col));
-        }
-        if (col > 0 && isOpen(row, col - 1)) {
-            uf.union(siteIndex, getSiteIndex(row, col - 1));
-        }
-        if (col < gridSize - 1 && isOpen(row, col + 1)) {
-            uf.union(siteIndex, getSiteIndex(row, col + 1));
-        }
     }
 
 
