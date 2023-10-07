@@ -10,20 +10,14 @@ public class Percolation {
 
     public Percolation(int N) {
         if (N <= 0) {
-            throw new IllegalArgumentException("N must be greater than 0.");
+            throw new IllegalArgumentException("Grid size must be greater than 0");
         }
-        gridSize = N;
-        openSites = new boolean[N * N];
-        openSitesCount = 0;
-        uf = new WeightedQuickUnionUF(N * N + 2);
-        virtualTopSite = N * N;
-        virtualBottomSite = N * N + 1;
-
-        // Connect virtual top and bottom sites to their respective rows
-        for (int col = 0; col < N; col++) {
-            uf.union(virtualTopSite, col);
-            uf.union(virtualBottomSite, (N - 1) * N + col);
-        }
+        this.gridSize = N; // Change 'this.N' to 'this.gridSize'
+        this.openSites = new boolean[N * N];
+        this.uf = new WeightedQuickUnionUF(N * N + 2);
+        this.virtualTopSite = N * N;
+        this.virtualBottomSite = N * N + 1;
+        this.openSitesCount = 0;
     }
 
     public void open(int row, int col) {

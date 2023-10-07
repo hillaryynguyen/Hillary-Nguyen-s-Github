@@ -1,5 +1,9 @@
 import org.junit.jupiter.api.Test;
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+import edu.princeton.cs.algs4.StdRandom;
+
+
 
 public class PercolationTest {
     private int[][] getState(int N, Percolation p) {
@@ -88,4 +92,56 @@ public class PercolationTest {
         p.open(2, 2);
         assertThat(p.percolates()).isTrue(); // Path is open
     }
+
+    @Test
+    public void testBackwashException() {
+        Percolation percolation = new Percolation(3);
+
+        // Open some sites that would cause backwash
+        percolation.open(0, 0);
+        percolation.open(1, 0);
+        percolation.open(2, 0);
+
+        // These sites should not be full due to backwash
+        assertFalse(percolation.isFull(2, 0));
+        assertFalse(percolation.isFull(2, 1));
+        assertFalse(percolation.isFull(2, 2));
+
+        // The site (2, 0) should not be open
+        assertFalse(percolation.isOpen(2, 0));
+
+        // All other sites should be open and full
+        assertTrue(percolation.isOpen(0, 0));
+        assertTrue(percolation.isOpen(1, 0));
+        assertTrue(percolation.isOpen(2, 1));
+        assertTrue(percolation.isOpen(2, 2));
+
+        assertTrue(percolation.isFull(0, 0));
+        assertTrue(percolation.isFull(1, 0));
+        assertTrue(percolation.isFull(2, 1));
+        assertTrue(percolation.isFull(2, 2));
+
+        // The system should not percolate
+        assertFalse(percolation.percolates());
+    }
+
+    @Test
+    public void testRandom() {
+        int n = 5; // Change this to the desired grid size
+
+        Percolation percolation = new Percolation(n);
+
+        // Open a random set of sites
+        for (int i = 0; i < n * n; i++) {
+            int row = StdRandom.uniform(n);
+            int col = StdRandom.uniform(n);
+            percolation.open(row, col);
+        }
+
+        // Check if the system percolates
+        boolean percolates = percolation.percolates();
+    }
+
 }
+
+
