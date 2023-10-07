@@ -9,7 +9,6 @@ public class Percolation {
     private final int virtualTopSite;
     private final int virtualBottomSite;
 
-
     public Percolation(int N) {
         if (N <= 0) {
             throw new IllegalArgumentException("N must be greater than 0.");
@@ -22,16 +21,13 @@ public class Percolation {
         virtualTopSite = N * N;
         virtualBottomSite = N * N + 1;
 
-
         // Connect virtual top and bottom sites to their respective rows
         for (int col = 0; col < N; col++) {
             uf.union(virtualTopSite, col);
             uf.union(virtualBottomSite, (N - 1) * N + col);
             fullCheckUf.union(virtualTopSite, col);
-
         }
     }
-
 
     public void open(int row, int col) {
         validateIndices(row, col);
@@ -40,20 +36,16 @@ public class Percolation {
             openSites[siteIndex] = true;
             openSitesCount++;
 
-
             if (row == 0) {
                 uf.union(siteIndex, virtualTopSite);
                 fullCheckUf.union(siteIndex, virtualTopSite);
-
             }
             if (row == gridSize - 1) {
                 uf.union(siteIndex, virtualBottomSite);
             }
 
-
             int[] dx = {-1, 1, 0, 0};
             int[] dy = {0, 0, -1, 1};
-
 
             for (int i = 0; i < 4; i++) {
                 int newRow = row + dx[i];
@@ -62,11 +54,8 @@ public class Percolation {
                     int neighborIndex = getSiteIndex(newRow, newCol);
                     uf.union(siteIndex, neighborIndex);
                     fullCheckUf.union(siteIndex, neighborIndex);
-
                 }
             }
-        } else {
-            throw new IllegalArgumentException("Site is already open.");
         }
     }
 
@@ -75,28 +64,23 @@ public class Percolation {
         return openSites[getSiteIndex(row, col)];
     }
 
-
     public boolean isFull(int row, int col) {
         validateIndices(row, col);
         int siteIndex = getSiteIndex(row, col);
         return isOpen(row, col) && fullCheckUf.connected(siteIndex, virtualTopSite);
     }
 
-
     public int numberOfOpenSites() {
         return openSitesCount;
     }
 
-
     public boolean percolates() {
-        return uf.connected(virtualTopSite, virtualBottomSite) && fullCheckUf.connected(virtualTopSite, virtualBottomSite);
+        return uf.connected(virtualTopSite, virtualBottomSite);
     }
-
 
     private int getSiteIndex(int row, int col) {
         return row * gridSize + col;
     }
-
 
     private void validateIndices(int row, int col) {
         if (row < 0 || row >= gridSize || col < 0 || col >= gridSize) {
@@ -104,8 +88,8 @@ public class Percolation {
         }
     }
 
-
     private boolean isValid(int row, int col) {
         return row >= 0 && row < gridSize && col >= 0 && col < gridSize;
     }
 }
+
