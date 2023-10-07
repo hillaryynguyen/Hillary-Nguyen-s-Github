@@ -65,6 +65,8 @@ public class Percolation {
 
                 }
             }
+        } else {
+            throw new IllegalArgumentException("Site is already open.");
         }
     }
 
@@ -87,7 +89,7 @@ public class Percolation {
 
 
     public boolean percolates() {
-        return uf.connected(virtualTopSite, virtualBottomSite);
+        return uf.connected(virtualTopSite, virtualBottomSite) && fullCheckUf.connected(virtualTopSite, virtualBottomSite);
     }
 
 
