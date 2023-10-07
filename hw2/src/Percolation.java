@@ -27,6 +27,10 @@ public class Percolation {
     }
 
     public void open(int row, int col) {
+        if (row < 0 || row >= gridSize || col < 0 || col >= gridSize) {
+            throw new IndexOutOfBoundsException("Row or column index is out of bounds.");
+        }
+
         validateIndices(row, col);
 
         int siteIndex = getSiteIndex(row, col);
