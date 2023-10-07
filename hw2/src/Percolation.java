@@ -21,13 +21,20 @@ public class Percolation {
         virtualTopSite = N * N;
         virtualBottomSite = N * N + 1;
 
-        // Connect virtual top and bottom sites to their respective rows
-        for (int col = 0; col < N; col++) {
-            uf.union(virtualTopSite, col);
-            uf.union(virtualBottomSite, (N - 1) * N + col);
-            fullCheckUf.union(virtualTopSite, col);
+        if (N == 1) {
+            uf.union(virtualTopSite, 0);
+            uf.union(virtualBottomSite, 0);
+            fullCheckUf.union(virtualTopSite, 0);
+        } else {
+            // Connect virtual top and bottom sites to their respective rows
+            for (int col = 0; col < N; col++) {
+                uf.union(virtualTopSite, col);
+                uf.union(virtualBottomSite, (N - 1) * N + col);
+                fullCheckUf.union(virtualTopSite, col);
+            }
         }
     }
+
 
     public void open(int row, int col) {
         validateIndices(row, col);
@@ -84,7 +91,7 @@ public class Percolation {
 
     private void validateIndices(int row, int col) {
         if (row < 0 || row >= gridSize || col < 0 || col >= gridSize) {
-            throw new IllegalArgumentException("Row and col indices are out of bounds.");
+            throw new IndexOutOfBoundsException("Row and col indices are out of bounds.");
         }
     }
 
