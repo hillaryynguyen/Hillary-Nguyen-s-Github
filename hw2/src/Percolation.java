@@ -61,7 +61,6 @@ public class Percolation {
                     uf.union(siteIndex, neighborIndex);
                 }
             }
-            connectToNeighbors(row, col);
         }
     }
 
