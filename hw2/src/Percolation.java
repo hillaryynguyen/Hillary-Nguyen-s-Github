@@ -83,6 +83,10 @@ public class Percolation {
     }
 
     public boolean percolates() {
+        if (gridSize == 1) {
+            // Special case for N = 1
+            return isOpen(0, 0);
+        }
         return uf.connected(virtualTopSite, virtualBottomSite);
     }
 
