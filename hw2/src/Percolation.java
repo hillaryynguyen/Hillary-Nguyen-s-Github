@@ -21,17 +21,18 @@ public class Percolation {
         virtualTopSite = N * N;
         virtualBottomSite = N * N + 1;
 
-        if (N == 1) {
-            uf.union(virtualTopSite, 0);
-            uf.union(virtualBottomSite, 0);
-            fullCheckUf.union(virtualTopSite, 0);
-        } else {
+        if (N > 1) {
             // Connect virtual top and bottom sites to their respective rows
             for (int col = 0; col < N; col++) {
                 uf.union(virtualTopSite, col);
                 uf.union(virtualBottomSite, (N - 1) * N + col);
                 fullCheckUf.union(virtualTopSite, col);
             }
+        } else {
+            // For N=1, connect virtual top and bottom sites to the single site
+            uf.union(virtualTopSite, 0);
+            uf.union(virtualBottomSite, 0);
+            fullCheckUf.union(virtualTopSite, 0);
         }
     }
 
