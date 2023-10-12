@@ -1,9 +1,13 @@
 package main;
 
 import browser.NgordnetServer;
+import ngrams.NGramMap;
 
 public class Main {
     public static void main(String[] args) {
+        String wordFile = "./data/ngrams/top_14377_words.csv";
+        String countFile = "./data/ngrams/total_counts.csv";
+        NGramMap ngm = new NGramMap(wordFile, countFile);
         NgordnetServer hns = new NgordnetServer();
 
         /* The following code might be useful to you.
@@ -16,7 +20,7 @@ public class Main {
 
         hns.startUp();
         hns.register("history", new DummyHistoryHandler());
-        hns.register("historytext", new DummyHistoryTextHandler());
+        hns.register("historytext", new HistoryTextHandler(ngm));
 
         System.out.println("Finished server startup! Visit http://localhost:4567/ngordnet_2a.html");
     }

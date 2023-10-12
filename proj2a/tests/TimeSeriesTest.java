@@ -5,6 +5,11 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.junit.Before;
+import static org.junit.Assert.*;
+
+import org.junit.jupiter.api.BeforeEach;
+
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -41,4 +46,43 @@ public class TimeSeriesTest {
             assertThat(totalPopulation.data().get(i)).isWithin(1E-10).of(expectedTotal.get(i));
         }
     }
-} 
+    private TimeSeries ts1;  // Initialize the ts1 variable
+
+    @BeforeEach
+    void setUp() {
+        ts1 = new TimeSeries();  // Initialize ts1 with a valid TimeSeries object
+        // You can add data to ts1 as needed for your tests
+        ts1.put(2000, 100.0);
+        ts1.put(2001, 150.0);
+        // Add more data if necessary
+    }
+
+    @Test
+    void testPlus() {
+        TimeSeries ts2 = new TimeSeries();
+        ts2.put(2000, 50.0);
+        ts2.put(2002, 75.0);
+
+        TimeSeries result = ts1.plus(ts2);
+
+        assertThat(result).isNotNull();
+        assertThat(result.get(2000)).isEqualTo(150.0);  // Modify the expected value based on your data
+        // Add more assertions as needed
+    }
+
+    @Test
+    void testDividedBy() {
+        TimeSeries ts2 = new TimeSeries();
+        ts2.put(2000, 50.0);
+        ts2.put(2001, 25.0);
+
+        TimeSeries result = ts1.dividedBy(ts2);
+
+        assertThat(result).isNotNull();
+        assertThat(result.get(2000)).isEqualTo(2.0);  // Modify the expected value based on your data
+        // Add more assertions as needed
+    }
+
+        // Other test methods
+
+}
