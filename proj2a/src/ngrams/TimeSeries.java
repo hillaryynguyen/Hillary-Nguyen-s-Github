@@ -66,14 +66,12 @@ public class TimeSeries extends TreeMap<Integer, Double> {
      */
     public TimeSeries plus(TimeSeries ts) {
         // TODO: Fill in this method.
-        TimeSeries result = new TimeSeries();
-
-        for (int year : years()) {
-            double thisValue = get(year);
+        TimeSeries result = new TimeSeries(ts, MIN_YEAR, MAX_YEAR);
+        for (int year : this.years()) {
+            double thisValue = this.get(year);
             double tsValue = ts.containsKey(year) ? ts.get(year) : 0.0; // Handle missing years
             result.put(year, thisValue + tsValue);
         }
-
         return result;
     }
 
