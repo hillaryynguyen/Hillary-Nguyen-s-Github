@@ -67,6 +67,8 @@ public class TimeSeriesTest {
 
         assertThat(result).isNotNull();
         assertThat(result.get(2000)).isEqualTo(150.0);  // Modify the expected value based on your data
+        assertThat(result.get(1824)).isEqualTo(168.42); // Update this value based on your data
+
         // Add more assertions as needed
     }
 
@@ -80,6 +82,8 @@ public class TimeSeriesTest {
 
         assertThat(result).isNotNull();
         assertThat(result.get(2000)).isEqualTo(2.0);  // Modify the expected value based on your data
+        assertThat(result.get(1800)).isEqualTo(2.0);  // Update this value based on your data
+        assertThat(result.get(1828)).isEqualTo(4.75); // Update this value based on your data
         // Add more assertions as needed
     }
 
