@@ -45,7 +45,7 @@ public class NGramMap {
             BufferedReader wordsReader = new BufferedReader(new FileReader(new File(wordsFilename)));
             String line;
             while ((line = wordsReader.readLine()) != null) {
-                String[] parts = line.split("\\t");
+                String[] parts = line.split("\t");
                 if (parts.length >= 3) {
                     String word = parts[0];
                     try {
@@ -154,12 +154,18 @@ public class NGramMap {
             int count = wordData.get(word).getOrDefault(year, 0);
             int totalWords = totalCountData.getOrDefault(year, 0);
 
-            double relativeFrequency = (double) count / totalWords;
-            wordHistory.put(year, relativeFrequency);
+            if (totalWords != 0) {
+                double relativeFrequency = (double) count / totalWords;
+                wordHistory.put(year, relativeFrequency);
+            } else {
+                // Handle division by zero or missing data
+                wordHistory.put(year, 0.0);
+            }
         }
 
         return wordHistory;
     }
+
 
 
     /**
@@ -174,7 +180,22 @@ public class NGramMap {
         }
 
         Map<Integer, Integer> data = wordData.get(word);
-        return createTimeSeriesFromMap(data);
+        TimeSeries wordHistory = createTimeSeriesFromMap(data);
+
+        TimeSeries normalizedWordHistory = new TimeSeries();
+        for (int year : wordHistory.years()) {
+            int count = wordHistory.get(year).intValue();
+            int totalWords = totalCountData.getOrDefault(year, 0);
+
+            if (totalWords != 0) {
+                double relativeFrequency = (double) count / totalWords;
+                normalizedWordHistory.put(year, relativeFrequency);
+            } else {
+                normalizedWordHistory.put(year, 0.0);
+            }
+        }
+
+        return normalizedWordHistory;
     }
 
     /**
