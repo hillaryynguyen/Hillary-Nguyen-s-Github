@@ -101,22 +101,18 @@ public class TimeSeries extends TreeMap<Integer, Double> {
         // TODO: Fill in this method.
         TimeSeries result = new TimeSeries();
         for (int year : this.years()) {
-            if (!ts.containsKey(year)) {
-                throw new IllegalArgumentException("Year " + year + " not found in the provided TimeSeries");
-            }
             double thisValue = this.get(year);
-            double tsValue = ts.get(year);
+            double tsValue = ts.containsKey(year) ? ts.get(year) : 0.0; // Handle missing years
             result.put(year, thisValue / tsValue);
         }
         for (int year : ts.years()) {
             if (!this.containsKey(year)) {
                 // Handle missing years in 'this' TimeSeries
-                throw new IllegalArgumentException("Year " + year + " not found in 'this' TimeSeries");
+                result.put(year, 0.0); // Return 0 for missing years
             }
         }
         return result;
     }
-
     // TODO: Add any private helper methods.
     // TODO: Remove all TODO comments before submitting.
 }

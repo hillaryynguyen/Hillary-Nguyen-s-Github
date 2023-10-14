@@ -8,6 +8,8 @@ import java.util.Collection;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileNotFoundException;
+import java.util.*;
+
 
 import static ngrams.TimeSeries.MAX_YEAR;
 import static ngrams.TimeSeries.MIN_YEAR;
@@ -25,8 +27,8 @@ import static ngrams.TimeSeries.MIN_YEAR;
 public class NGramMap {
 
     // TODO: Add any necessary static/instance variables.
-    private Map<String, Map<Integer, Integer>> wordData;
-    private Map<Integer, Integer> totalCountData;
+    private final Map<String, Map<Integer, Integer>> wordData;
+    private final Map<Integer, Integer> totalCountData;
 
     /**
      * Constructs an NGramMap from WORDSFILENAME and COUNTSFILENAME.
@@ -38,7 +40,9 @@ public class NGramMap {
         totalCountData = new HashMap<>();
 
         // Read data from words file
-        try (BufferedReader wordsReader = new BufferedReader(new FileReader(new File(wordsFilename)))) {
+        try {
+            // Read data from words file
+            BufferedReader wordsReader = new BufferedReader(new FileReader(new File(wordsFilename)));
             String line;
             while ((line = wordsReader.readLine()) != null) {
                 String[] parts = line.split("\\t");
@@ -49,17 +53,15 @@ public class NGramMap {
                         int count = Integer.parseInt(parts[2]);
                         wordData.computeIfAbsent(word, k -> new HashMap<>()).put(year, count);
                     } catch (NumberFormatException e) {
-
+                        // Handle invalid data
+                        e.printStackTrace();
                     }
                 }
             }
-        } catch (IOException e) {
+            wordsReader.close();
 
-        }
-
-        // Read data from counts file
-        try (BufferedReader countsReader = new BufferedReader(new FileReader(new File(countsFilename)))) {
-            String line;
+            // Read data from counts file
+            BufferedReader countsReader = new BufferedReader(new FileReader(new File(countsFilename)));
             while ((line = countsReader.readLine()) != null) {
                 String[] parts = line.split(",");
                 if (parts.length >= 2) {
@@ -68,10 +70,15 @@ public class NGramMap {
                     totalCountData.put(year, totalWords);
                 }
             }
+            countsReader.close();
         } catch (IOException e) {
+            // Handle file I/O exception
             e.printStackTrace();
         }
     }
+
+
+
 
     /**
      * Provides the history of WORD between STARTYEAR and ENDYEAR, inclusive of both ends. The
@@ -94,7 +101,6 @@ public class NGramMap {
 
         return wordHistory;
     }
-
     /**
      * Provides the history of WORD. The returned TimeSeries should be a copy, not a link to this
      * NGramMap's TimeSeries. In other words, changes made to the object returned by this function
@@ -179,8 +185,7 @@ public class NGramMap {
      * ENDYEAR, inclusive of both ends. If a word does not exist in this time frame, ignore it
      * rather than throwing an exception.
      */
-    public TimeSeries summedWeightHistory(Collection<String> words,
-                                          int startYear, int endYear) {
+    public TimeSeries summedWeightHistory(Collection<String> words, int startYear, int endYear) {
         // TODO: Fill in this method.
         TimeSeries summedHistory = new TimeSeries();
 

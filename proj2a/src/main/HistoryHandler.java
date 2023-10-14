@@ -1,18 +1,17 @@
 package main;
 
 import browser.NgordnetQuery;
-import edu.stanford.cs.introcs.StdStats;
-import ngordnet.NGramMap;
+import browser.NgordnetQueryHandler;
+import ngrams.NGramMap;
 import ngordnet.Plotter;
 import ngordnet.TimeSeries;
 
-import java.util.List;
 
 public class HistoryHandler implements NgordnetQueryHandler {
-    private final NGramMap ngm;
+    private final NGramMap nGramMap;
 
-    public HistoryHandler(NGramMap map) {
-        ngm = map;
+    public HistoryHandler(NGramMap nGramMap) {
+        this.nGramMap = nGramMap;
     }
 
     @Override
@@ -22,13 +21,10 @@ public class HistoryHandler implements NgordnetQueryHandler {
         int endYear = q.endYear();
 
         // Create a list to hold the TimeSeries data for the specified words
-        List<TimeSeries> timeSeriesList = ngm.buildTimeSeries(words, startYear, endYear);
-
-        // Create a list of labels for the time series
-        List<String> labels = words;
+        List<TimeSeries> timeSeriesList = nGramMap.buildTimeSeries(words, startYear, endYear);
 
         // Generate a chart with the retrieved data
-        Plotter.plotTS(timeSeriesList, labels, "Year", "Relative Frequency");
+        Plotter.plotTS(timeSeriesList, words, "Year", "Relative Frequency");
 
         // Encode the chart as a base-64 string
         String base64EncodedImage = Plotter.getChartString();
