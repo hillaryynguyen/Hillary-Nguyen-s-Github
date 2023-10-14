@@ -89,12 +89,14 @@ public class NGramMap {
      */
     public TimeSeries countHistory(String word, int startYear, int endYear) {
         // TODO: Fill in this method.
-        if (!wordData.containsKey(word)) {
-            return new TimeSeries();
+        TimeSeries result = new TimeSeries();
+
+        if (wordData.containsKey(word)) {
+            Map<Integer, Integer> data = wordData.get(word);
+            result = createTimeSeriesFromMap(data, startYear, endYear);
         }
 
-        Map<Integer, Integer> data = wordData.get(word);
-        return createTimeSeriesFromMap(data, startYear, endYear);
+        return result;
     }
     /**
      * Provides the history of WORD. The returned TimeSeries should be a copy, not a link to this
@@ -104,14 +106,15 @@ public class NGramMap {
      */
     public TimeSeries countHistory(String word) {
         // TODO: Fill in this method.
-        if (!wordData.containsKey(word)) {
-            return new TimeSeries();
+        TimeSeries result = new TimeSeries();
+
+        if (wordData.containsKey(word)) {
+            Map<Integer, Integer> data = wordData.get(word);
+            result = createTimeSeriesFromMap(data);
         }
 
-        Map<Integer, Integer> data = wordData.get(word);
-        return createTimeSeriesFromMap(data);
+        return result;
     }
-
     /**
      * Returns a defensive copy of the total number of words recorded per year in all volumes.
      */
@@ -145,25 +148,25 @@ public class NGramMap {
      */
     public TimeSeries weightHistory(String word, int startYear, int endYear) {
         // TODO: Fill in this method.
-        if (!wordData.containsKey(word)) {
-            return new TimeSeries();
-        }
+        TimeSeries result = new TimeSeries();
 
-        TimeSeries wordHistory = new TimeSeries();
-        for (int year = startYear; year <= endYear; year++) {
-            int count = wordData.get(word).getOrDefault(year, 0);
-            int totalWords = totalCountData.getOrDefault(year, 0);
+        if (wordData.containsKey(word)) {
+            result = new TimeSeries();
+            for (int year = startYear; year <= endYear; year++) {
+                int count = wordData.get(word).getOrDefault(year, 0);
+                int totalWords = totalCountData.getOrDefault(year, 0);
 
-            if (totalWords != 0) {
-                double relativeFrequency = (double) count / totalWords;
-                wordHistory.put(year, relativeFrequency);
-            } else {
-                // Handle division by zero or missing data
-                wordHistory.put(year, 0.0);
+                if (totalWords != 0) {
+                    double relativeFrequency = (double) count / totalWords;
+                    result.put(year, relativeFrequency);
+                } else {
+                    // Handle division by zero or missing data
+                    result.put(year, 0.0);
+                }
             }
         }
 
-        return wordHistory;
+        return result;
     }
 
 
@@ -175,29 +178,28 @@ public class NGramMap {
      */
     public TimeSeries weightHistory(String word) {
         // TODO: Fill in this method.
-        if (!wordData.containsKey(word)) {
-            return new TimeSeries();
-        }
+        TimeSeries result = new TimeSeries();
 
-        Map<Integer, Integer> data = wordData.get(word);
-        TimeSeries wordHistory = createTimeSeriesFromMap(data);
+        if (wordData.containsKey(word)) {
+            Map<Integer, Integer> data = wordData.get(word);
+            TimeSeries wordHistory = createTimeSeriesFromMap(data);
 
-        TimeSeries normalizedWordHistory = new TimeSeries();
-        for (int year : wordHistory.years()) {
-            int count = wordHistory.get(year).intValue();
-            int totalWords = totalCountData.getOrDefault(year, 0);
+            result = new TimeSeries();
+            for (int year : wordHistory.years()) {
+                int count = wordHistory.get(year).intValue();
+                int totalWords = totalCountData.getOrDefault(year, 0);
 
-            if (totalWords != 0) {
-                double relativeFrequency = (double) count / totalWords;
-                normalizedWordHistory.put(year, relativeFrequency);
-            } else {
-                normalizedWordHistory.put(year, 0.0);
+                if (totalWords != 0) {
+                    double relativeFrequency = (double) count / totalWords;
+                    result.put(year, relativeFrequency);
+                } else {
+                    result.put(year, 0.0);
+                }
             }
         }
 
-        return normalizedWordHistory;
+        return result;
     }
-
     /**
      * Provides the summed relative frequency per year of all words in WORDS between STARTYEAR and
      * ENDYEAR, inclusive of both ends. If a word does not exist in this time frame, ignore it
