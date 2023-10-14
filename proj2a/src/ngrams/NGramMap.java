@@ -93,13 +93,8 @@ public class NGramMap {
             return new TimeSeries();
         }
 
-        TimeSeries wordHistory = new TimeSeries();
-        for (int year : wordData.get(word).keySet()) {
-            int count = wordData.get(word).get(year);
-            wordHistory.put(year, (double) count);
-        }
-
-        return wordHistory;
+        Map<Integer, Integer> data = wordData.get(word);
+        return createTimeSeriesFromMap(data, startYear, endYear);
     }
     /**
      * Provides the history of WORD. The returned TimeSeries should be a copy, not a link to this
@@ -129,6 +124,16 @@ public class NGramMap {
         TimeSeries timeSeries = new TimeSeries();
         for (Map.Entry<Integer, Integer> entry : data.entrySet()) {
             timeSeries.put(entry.getKey(), (double) entry.getValue());
+        }
+        return timeSeries;
+    }
+
+    private TimeSeries createTimeSeriesFromMap(Map<Integer, Integer> data, int startYear, int endYear) {
+        TimeSeries timeSeries = new TimeSeries();
+        for (int year = startYear; year <= endYear; year++) {
+            if (data.containsKey(year)) {
+                timeSeries.put(year, (double) data.get(year));
+            }
         }
         return timeSeries;
     }
@@ -168,16 +173,8 @@ public class NGramMap {
             return new TimeSeries();
         }
 
-        TimeSeries wordHistory = new TimeSeries();
-        for (int year : wordData.get(word).keySet()) {
-            int count = wordData.get(word).get(year);
-            int totalWords = totalCountData.getOrDefault(year, 0);
-
-            double relativeFrequency = (double) count / totalWords;
-            wordHistory.put(year, relativeFrequency);
-        }
-
-        return wordHistory;
+        Map<Integer, Integer> data = wordData.get(word);
+        return createTimeSeriesFromMap(data);
     }
 
     /**
@@ -232,6 +229,7 @@ public class NGramMap {
 
         return summedHistory;
     }
+
 
     // TODO: Add any private helper methods.
     // TODO: Remove all TODO comments before submitting.

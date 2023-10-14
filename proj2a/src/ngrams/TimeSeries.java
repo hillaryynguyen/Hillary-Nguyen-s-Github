@@ -29,8 +29,8 @@ public class TimeSeries extends TreeMap<Integer, Double> {
     public TimeSeries(TimeSeries ts, int startYear, int endYear) {
         super();
         // TODO: Fill in this constructor.
-        for (int year = startYear; year <= endYear; year++) {
-            if (ts.containsKey(year)) {
+        for (int year : ts.keySet()) {
+            if (year >= startYear && year <= endYear) {
                 this.put(year, ts.get(year));
             }
         }
@@ -42,7 +42,6 @@ public class TimeSeries extends TreeMap<Integer, Double> {
     public List<Integer> years() {
         // TODO: Fill in this method.
         List<Integer> yearList = new ArrayList<>();
-
         for (int year : keySet()) {
             yearList.add(year);
         }
@@ -73,17 +72,11 @@ public class TimeSeries extends TreeMap<Integer, Double> {
      */
     public TimeSeries plus(TimeSeries ts) {
         // TODO: Fill in this method.
-        TimeSeries result = new TimeSeries();
+        TimeSeries result = new TimeSeries(ts, MIN_YEAR, MAX_YEAR);
         for (int year : this.years()) {
             double thisValue = this.get(year);
             double tsValue = ts.containsKey(year) ? ts.get(year) : 0.0; // Handle missing years
             result.put(year, thisValue + tsValue);
-        }
-        for (int year : ts.years()) {
-            if (!this.containsKey(year)) {
-                // Handle missing years in 'this' TimeSeries
-                result.put(year, ts.get(year));
-            }
         }
         return result;
     }
@@ -99,20 +92,18 @@ public class TimeSeries extends TreeMap<Integer, Double> {
      */
     public TimeSeries dividedBy(TimeSeries ts) {
         // TODO: Fill in this method.
-        TimeSeries result = new TimeSeries();
+        TimeSeries result = new TimeSeries(ts, MIN_YEAR, MAX_YEAR);
         for (int year : this.years()) {
             double thisValue = this.get(year);
             double tsValue = ts.containsKey(year) ? ts.get(year) : 0.0; // Handle missing years
-            result.put(year, thisValue / tsValue);
-        }
-        for (int year : ts.years()) {
-            if (!this.containsKey(year)) {
-                // Handle missing years in 'this' TimeSeries
-                result.put(year, 0.0); // Return 0 for missing years
+            if (tsValue == 0.0) {
+                throw new IllegalArgumentException("Division by zero");
             }
+            result.put(year, thisValue / tsValue);
         }
         return result;
     }
+}
     // TODO: Add any private helper methods.
     // TODO: Remove all TODO comments before submitting.
-}
+
