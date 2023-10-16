@@ -101,6 +101,7 @@ public class TimeSeries extends TreeMap<Integer, Double> {
 
         return result;
     }
+
     // Private helper method to copy TimeSeries within a specified range of years.
     private void copyTimeSeriesWithinRange(TimeSeries ts, int startYear, int endYear) {
         for (int year : ts.keySet()) {

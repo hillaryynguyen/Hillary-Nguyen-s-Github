@@ -58,9 +58,8 @@ public class NGramMap {
             return new TimeSeries();
         }
 
-        TimeSeries wordData = wordMap.get(word);
-        TimeSeries subseries = new TimeSeries(wordData, startYear, endYear);
-        return subseries;
+        TimeSeries wordData = new TimeSeries(wordMap.get(word), startYear, endYear); // Make a copy
+        return wordData;
     }
 
     public TimeSeries countHistory (String word){
@@ -69,11 +68,15 @@ public class NGramMap {
         }
 
         TimeSeries wordData = wordMap.get(word);
-        return wordData;
+        TimeSeries copy = new TimeSeries();
+        for (int year : wordData.years()) {
+            copy.put(year, wordData.get(year));
+        }
+        return copy;
     }
 
     public TimeSeries totalCountHistory () {
-        return yearTotals;
+        return new TimeSeries(yearTotals, yearTotals.firstKey(), yearTotals.lastKey());
     }
 
     public TimeSeries weightHistory (String word,int startYear, int endYear){
