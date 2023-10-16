@@ -70,7 +70,20 @@ public class NGramMap {
         if (yearTotals.isEmpty()) {
             return new TimeSeries();
         }
-        return new TimeSeries(yearTotals, yearTotals.firstKey(), yearTotals.lastKey());
+
+        int startYear = Integer.MAX_VALUE;
+        int endYear = Integer.MIN_VALUE;
+
+        for (int year : yearTotals.keySet()) {
+            if (year < startYear) {
+                startYear = year;
+            }
+            if (year > endYear) {
+                endYear = year;
+            }
+        }
+
+        return new TimeSeries(yearTotals, startYear, endYear);
     }
 
     public TimeSeries weightHistory (String word,int startYear, int endYear){
