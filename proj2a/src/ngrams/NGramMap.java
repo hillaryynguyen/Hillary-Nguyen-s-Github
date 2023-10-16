@@ -67,6 +67,11 @@ public class NGramMap {
     }
 
     public TimeSeries totalCountHistory () {
+        if (yearTotals.isEmpty()) {
+            for (TimeSeries wordData : wordMap.values()) {
+                yearTotals = yearTotals.plus(wordData);
+            }
+        }
 
         int startYear = yearTotals.firstKey();
         int endYear = yearTotals.lastKey();
