@@ -31,7 +31,12 @@ public class TimeSeries extends TreeMap<Integer, Double> {
     public TimeSeries(TimeSeries ts, int startYear, int endYear) {
         super();
 
-        copyTimeSeriesWithinRange(ts, startYear, endYear);
+        for (Map.Entry<Integer, Double> entry : ts.entrySet()) {
+            int year = entry.getKey();
+            if (year >= startYear && year <= endYear) {
+                this.put(year, entry.getValue());
+            }
+        }
     }
 
     /**

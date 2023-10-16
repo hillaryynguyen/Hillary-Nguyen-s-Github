@@ -62,17 +62,8 @@ public class NGramMap {
         return wordData;
     }
 
-    public TimeSeries countHistory (String word){
-        if (!wordMap.containsKey(word)) {
-            return new TimeSeries();
-        }
-
-        TimeSeries wordData = wordMap.get(word);
-        TimeSeries copy = new TimeSeries();
-        for (int year : wordData.years()) {
-            copy.put(year, wordData.get(year));
-        }
-        return copy;
+    public TimeSeries countHistory (String word) {
+        return countHistory(word, Integer.MIN_VALUE, Integer.MAX_VALUE);
     }
 
     public TimeSeries totalCountHistory () {
@@ -145,5 +136,19 @@ public class NGramMap {
         }
 
         return summedHistory;
+    }
+
+    private int getFirstYear() {
+        if (yearTotals.isEmpty()) {
+            return 0;
+        }
+        return yearTotals.firstKey();
+    }
+
+    private int getLastYear() {
+        if (yearTotals.isEmpty()) {
+            return 0;
+        }
+        return yearTotals.lastKey();
     }
 }
