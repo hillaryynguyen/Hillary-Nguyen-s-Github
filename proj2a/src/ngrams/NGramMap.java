@@ -76,6 +76,9 @@ public class NGramMap {
     }
 
     public TimeSeries totalCountHistory () {
+        if (yearTotals.isEmpty()) {
+            return new TimeSeries();
+        }
         return new TimeSeries(yearTotals, yearTotals.firstKey(), yearTotals.lastKey());
     }
 
