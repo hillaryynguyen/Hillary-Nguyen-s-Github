@@ -67,21 +67,16 @@ public class NGramMap {
     }
 
     public TimeSeries totalCountHistory () {
-        if (yearTotals.isEmpty()) {
-            for (TimeSeries wordData : wordMap.values()) {
-                for (int year : wordData.years()) {
-                    double count = wordData.get(year);
-                    yearTotals.put(year, yearTotals.get(year) + count);
-                }
-            }
+        TimeSeries totalCounts = new TimeSeries();
+
+        for (int year : yearTotals.years()) {
+            double totalWords = yearTotals.get(year);
+            totalCounts.put(year, totalWords);
         }
 
-        int startYear = yearTotals.firstKey();
-        int endYear = yearTotals.lastKey();
-
-        return new TimeSeries(yearTotals, startYear, endYear);
+        return totalCounts;
     }
-
+    
     public TimeSeries weightHistory (String word,int startYear, int endYear){
         if (!wordMap.containsKey(word)) {
             return new TimeSeries();
