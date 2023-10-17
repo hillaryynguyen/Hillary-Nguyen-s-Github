@@ -8,8 +8,6 @@ import java.util.Map;
 
 
 public class NGramMap {
-
-    // TODO: Add any necessary static/instance variables.
     private static final int MIN_YR = 1400;
     private static final int MAX_YR = 2100;
     private final Map<String, TimeSeries> wordMap;
@@ -19,7 +17,6 @@ public class NGramMap {
      * Constructs an NGramMap from WORDSFILENAME and COUNTSFILENAME.
      */
     public NGramMap(String wordsFilename, String countsFilename) {
-        // TODO: Fill in this constructor. See the "NGramMap Tips" section of the spec for help.
         wordMap = new HashMap<>();
         In wordFile = new In(wordsFilename);
         In countFile = new In(countsFilename);
@@ -73,15 +70,15 @@ public class NGramMap {
     }
 
     public TimeSeries summedWeightHistory(Collection<String> words, int startYear, int endYear) {
-        TimeSeries sumWeight = new TimeSeries();
+        TimeSeries summedWeight = new TimeSeries();
         for (String word: words) {
             if (wordMap.containsKey(word)) {
                 TimeSeries wHist = weightHistory(word, startYear, endYear);
-                sumWeight = sumWeight.plus(wHist);
+                summedWeight = summedWeight.plus(wHist);
             }
 
         }
-        return sumWeight;
+        return summedWeight;
     }
 
     public TimeSeries summedWeightHistory(Collection<String> words) {
