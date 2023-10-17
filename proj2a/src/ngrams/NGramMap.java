@@ -53,12 +53,8 @@ public class NGramMap {
     }
 
     public TimeSeries countHistory(String word, int startYear, int endYear) {
-        if (!wordMap.containsKey(word)) {
-            return new TimeSeries();
-        }
-
-        TimeSeries wordData = new TimeSeries(wordMap.get(word), startYear, endYear); // Make a copy
-        return wordData;
+        TimeSeries tSeriesCopy = wordMap.get(word);
+        return new TimeSeries(tSeriesCopy, startYear, endYear);
     }
 
     public TimeSeries countHistory(String word) {
@@ -66,8 +62,8 @@ public class NGramMap {
     }
 
     public TimeSeries totalCountHistory() {
-        TimeSeries tCountHistorycopy = (TimeSeries) totalCountHistory.clone();
-        return tCountHistorycopy;
+        TimeSeries tCountHistcopy = (TimeSeries) totalCountHistory.clone();
+        return tCountHistcopy;
     }
 
     public TimeSeries weightHistory(String word, int startYear, int endYear) {
