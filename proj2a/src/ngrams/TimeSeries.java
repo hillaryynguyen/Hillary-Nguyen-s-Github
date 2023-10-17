@@ -3,7 +3,6 @@ package ngrams;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
-import java.util.Map;
 
 
 
@@ -15,8 +14,8 @@ import java.util.Map;
  */
 public class TimeSeries extends TreeMap<Integer, Double> {
 
-    public static final int MIN_YEAR = 1400;
-    public static final int MAX_YEAR = 2100;
+    public static final int MIN_YR = 1400;
+    public static final int MAX_YR = 2100;
 
     /**
      * Constructs a new empty TimeSeries.
@@ -31,10 +30,9 @@ public class TimeSeries extends TreeMap<Integer, Double> {
      */
     public TimeSeries(TimeSeries ts, int startYear, int endYear) {
         super();
-        for (Map.Entry<Integer, Double> entry : ts.entrySet()) {
-            int year = entry.getKey();
-            if (year >= startYear && year <= endYear) {
-                this.put(year, entry.getValue());
+        for (int year = startYear; year <= endYear; year++) {
+            if (ts.containsKey(year)) {
+                this.put(year, ts.get(year));
             }
         }
     }
@@ -43,8 +41,11 @@ public class TimeSeries extends TreeMap<Integer, Double> {
      * Returns all years for this TimeSeries (in any order).
      */
     public List<Integer> years() {
-        List<Integer> yearList = new ArrayList<>(keySet());
-        return yearList;
+        List<Integer> yrsList = new ArrayList<>();
+        for (int year: this.keySet()) {
+            yrsList.add(year);
+        }
+        return yrsList;
     }
 
     /**
@@ -52,11 +53,11 @@ public class TimeSeries extends TreeMap<Integer, Double> {
      * Must be in the same order as years().
      */
     public List<Double> data() {
-        List<Double> dataList = new ArrayList<>();
-        for (int year : years()) {
-            dataList.add(get(year));
+        List<Double> dList = new ArrayList<>();
+        for (int year : this.years()) {
+            dList.add(this.get(year));
         }
-        return dataList;
+        return dList;
     }
     /**
      * Returns the year-wise sum of this TimeSeries with the given TS. In other words, for
@@ -68,11 +69,18 @@ public class TimeSeries extends TreeMap<Integer, Double> {
      * should store the value from the TimeSeries that contains that year.
      */
     public TimeSeries plus(TimeSeries ts) {
-        TimeSeries result = new TimeSeries(ts, MIN_YEAR, MAX_YEAR);
-        for (int year : this.years()) {
-            double thisValue = this.get(year);
-            double tsValue = ts.containsKey(year) ? ts.get(year) : 0.0; // Handle missing years
-            result.put(year, thisValue + tsValue);
+        TimeSeries result = new TimeSeries();
+        for (int year: this.years()) {
+            if (ts.containsKey(year)) {
+                result.put(year, this.get(year) + ts.get(year));
+            } else {
+                result.put(year, this.get(year));
+            }
+        }
+        for (int year: ts.years()) {
+            if (!this.containsKey(year)) {
+                result.put(year, ts.get(year));
+            }
         }
         return result;
     }
@@ -88,28 +96,12 @@ public class TimeSeries extends TreeMap<Integer, Double> {
      */
     public TimeSeries dividedBy(TimeSeries ts) {
         TimeSeries result = new TimeSeries();
-        for (int year : years()) {
-            if (!ts.containsKey(year)) {
-                throw new IllegalArgumentException("Missing year in TS: " + year);
+        for (int year: ts.years()) {
+            if (!this.containsKey(year)) {
+                throw new IllegalArgumentException();
             }
-            double thisValue = get(year);
-            double tsValue = ts.get(year);
-            if (tsValue == 0.0) {
-                throw new IllegalArgumentException("Division by zero at year " + year);
-            }
-            result.put(year, thisValue / tsValue);
+            result.put(year, ts.get(year) / ts.get(year));
         }
         return result;
     }
-
-    // Private helper method to copy TimeSeries within a specified range of years.
-    private void copyTimeSeriesWithinRange(TimeSeries ts, int startYear, int endYear) {
-        for (int year : ts.keySet()) {
-            if (year >= startYear && year <= endYear) {
-                put(year, ts.get(year));
-            }
-        }
-    }
 }
-
-

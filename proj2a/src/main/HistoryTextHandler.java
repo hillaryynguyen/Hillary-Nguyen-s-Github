@@ -8,29 +8,22 @@ import java.util.List;
 
 
 public class HistoryTextHandler extends NgordnetQueryHandler {
-    private final NGramMap nGramMap;
+    private NGramMap ngramMap;
 
-    public HistoryTextHandler(NGramMap nGramMap) {
-        this.nGramMap = nGramMap;
+    public HistoryTextHandler(NGramMap map) {
+        ngramMap = map;
     }
-
     @Override
-    public String handle(NgordnetQuery q) {
-        List<String> words = q.words();
-        int startYear = q.startYear();
-        int endYear = q.endYear();
+    public String handle(NgordnetQuery query) {
+        List<String> words = query.words();
+        int startYear = query.startYear();
+        int endYear = query.endYear();
 
-        StringBuilder result = new StringBuilder();
-        result.append("You entered the following info into the browser:\n");
-        result.append("Words: ").append(words).append("\n");
-        result.append("Start Year: ").append(startYear).append("\n");
-        result.append("End Year: ").append(endYear).append("\n");
-
+        String result = "";
         for (String word : words) {
-            TimeSeries wordTimeSeries = nGramMap.weightHistory(word, startYear, endYear);
-            result.append(word).append(": ").append(wordTimeSeries.toString()).append("\n");
+            TimeSeries ts = ngramMap.weightHistory(word, startYear, endYear);
+            result += word + ": " + ts.toString() + "\n";
         }
-
-        return result.toString();
+        return result;
     }
 }

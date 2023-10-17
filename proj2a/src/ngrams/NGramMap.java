@@ -5,100 +5,87 @@ import edu.princeton.cs.algs4.In;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 
 public class NGramMap {
 
     // TODO: Add any necessary static/instance variables.
-    In words, counts;
-    TimeSeries yearTotals;
-    TreeMap<String, TimeSeries> wordMap;
-    private final TimeSeries totalCountHistory = new TimeSeries();
+    private static final int MIN_YR = 1400;
+    private static final int MAX_YR = 2100;
+    private final Map<String, TimeSeries> wordMap;
+    private final TimeSeries totalCH = new TimeSeries();
 
     /**
      * Constructs an NGramMap from WORDSFILENAME and COUNTSFILENAME.
      */
     public NGramMap(String wordsFilename, String countsFilename) {
         // TODO: Fill in this constructor. See the "NGramMap Tips" section of the spec for help.
-        yearTotals = new TimeSeries();
-        wordMap = new TreeMap<>();
-        counts = new In(countsFilename);
-        words = new In(wordsFilename);
-
-
-        while (words.hasNextLine()) {
-            String nextLine = words.readLine();
-            String[] wSplitLine = nextLine.split("\t");
-
-
-            String word = wSplitLine[0];
-            int year = Integer.parseInt(wSplitLine[1]);
-            double numAppears = Double.parseDouble(wSplitLine[2]);
-
-
-            if (wordMap.get(word) == null) {
-                TimeSeries newWordData = new TimeSeries();
-                wordMap.put(word, newWordData);
+        wordMap = new HashMap<>();
+        In wordFile = new In(wordsFilename);
+        In countFile = new In(countsFilename);
+        while (wordFile.hasNextLine()) {
+            String[] lineList = wordFile.readLine().split("\\t");
+            String fWord = lineList[0];
+            int year1 = Integer.parseInt(lineList[1]);
+            Double theCount = Double.parseDouble(lineList[2]);
+            if (year1 >= MIN_YR && year1 <= MAX_YR) {
+                if (!wordMap.containsKey(fWord)) {
+                    wordMap.put(fWord, new TimeSeries());
+                }
+                wordMap.get(fWord).put(year1, theCount);
             }
-
-
-            TimeSeries thisWordsData = wordMap.get(word);
-            thisWordsData.put(year, numAppears);
+        }
+        while (countFile.hasNextLine()) {
+            String[] lineList = countFile.readLine().split(",");
+            int year2 = Integer.parseInt(lineList[0]);
+            double totalCount = Double.parseDouble(lineList[1]);
+            if (year2 >= MIN_YR && year2 <= MAX_YR) {
+                totalCH.put(year2, totalCount);
+            }
         }
     }
 
+
     public TimeSeries countHistory(String word, int startYear, int endYear) {
-        if (!wordMap.containsKey(word)) {
-            return new TimeSeries();
-        }
-
-
-        TimeSeries wordData = new TimeSeries(wordMap.get(word), startYear, endYear); // Make a copy
-        return wordData;
+        TimeSeries tSeriesCopy = wordMap.get(word);
+        return new TimeSeries(tSeriesCopy, startYear, endYear);
     }
 
 
     public TimeSeries countHistory(String word) {
-        return countHistory(word, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        return countHistory(word, MIN_YR, MAX_YR);
     }
 
-
     public TimeSeries totalCountHistory() {
-        TimeSeries tCountHistorycopy = (TimeSeries) totalCountHistory.clone();
-        return tCountHistorycopy;
+        TimeSeries totalCHCopy = (TimeSeries) totalCH.clone();
+        return totalCHCopy;
     }
 
 
     public TimeSeries weightHistory(String word, int startYear, int endYear) {
-        TimeSeries wCount = countHistory(word, startYear, endYear);
-        TimeSeries totalCount = new TimeSeries(totalCountHistory, startYear, endYear);
-        return wCount.dividedBy(totalCount);
+        TimeSeries wordCount = countHistory(word, startYear, endYear);
+        TimeSeries totalCount = new TimeSeries(totalCH, startYear, endYear);
+        return wordCount.dividedBy(totalCount);
     }
-
 
     public TimeSeries weightHistory(String word) {
-        return weightHistory(word, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        return weightHistory(word, MIN_YR, MAX_YR);
     }
-
 
     public TimeSeries summedWeightHistory(Collection<String> words, int startYear, int endYear) {
-        TimeSeries summedHistory = new TimeSeries();
-
-
-        for (String word : words) {
+        TimeSeries sumWeight = new TimeSeries();
+        for (String word: words) {
             if (wordMap.containsKey(word)) {
-                TimeSeries wH = weightHistory(word, startYear, endYear);
-                summedHistory = summedHistory.plus(wH);
+                TimeSeries wHist = weightHistory(word, startYear, endYear);
+                sumWeight = sumWeight.plus(wHist);
             }
-        }
-        return summedHistory;
-    }
 
+        }
+        return sumWeight;
+    }
 
     public TimeSeries summedWeightHistory(Collection<String> words) {
-        return summedWeightHistory(words, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        return summedWeightHistory(words, MIN_YR, MAX_YR);
     }
-
 }
 
