@@ -44,14 +44,13 @@ public class NGramMap {
 
 
     public TimeSeries countHistory(String word, int startYear, int endYear) {
-        TimeSeries ts = new TimeSeries();
-        for (int year = startYear; year <= endYear; year++) {
-            if (wordMap.get(word).get(year) != null) {
-                ts.put(year, wordMap.get(word).get(year));
-            }
+        if (!wordMap.containsKey(word)) {
+            return new TimeSeries();
         }
-        return ts;
+        TimeSeries wordData = new TimeSeries(wordMap.get(word), startYear, endYear);
+        return wordData;
     }
+
 
 
     public TimeSeries countHistory(String word) {
