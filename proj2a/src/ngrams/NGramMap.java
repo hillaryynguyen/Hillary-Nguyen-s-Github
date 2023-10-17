@@ -1,10 +1,7 @@
 package ngrams;
 
 import java.util.Collection;
-import java.util.Set;
-import java.util.Map;
 import java.util.TreeMap;
-import java.util.HashSet;
 import edu.princeton.cs.algs4.In;
 import java.util.List;
 import java.util.ArrayList;
@@ -16,6 +13,8 @@ public class NGramMap {
     In words, counts;
     TimeSeries yearTotals;
     TreeMap<String, TimeSeries> wordMap;
+    private final TimeSeries totalCountHistory = new TimeSeries();
+
 
     /**
      * Constructs an NGramMap from WORDSFILENAME and COUNTSFILENAME.
@@ -53,7 +52,7 @@ public class NGramMap {
         return yearList;
     }
 
-    public TimeSeries countHistory (String word,int startYear, int endYear){
+    public TimeSeries countHistory(String word, int startYear, int endYear) {
         if (!wordMap.containsKey(word)) {
             return new TimeSeries();
         }
@@ -62,84 +61,39 @@ public class NGramMap {
         return wordData;
     }
 
-    public TimeSeries countHistory (String word) {
+    public TimeSeries countHistory(String word) {
         return countHistory(word, Integer.MIN_VALUE, Integer.MAX_VALUE);
     }
 
-    public TimeSeries totalCountHistory () {
-        TimeSeries totalCounts = new TimeSeries();
-
-        for (int year : yearTotals.years()) {
-            double totalWords = yearTotals.get(year);
-            totalCounts.put(year, totalWords);
-        }
-
-        return totalCounts;
-    }
-    
-    public TimeSeries weightHistory (String word,int startYear, int endYear){
-        if (!wordMap.containsKey(word)) {
-            return new TimeSeries();
-        }
-
-        TimeSeries wordData = wordMap.get(word);
-        TimeSeries subseries = new TimeSeries(wordData, startYear, endYear);
-
-        TimeSeries totalWords = new TimeSeries(yearTotals, startYear, endYear);
-        return subseries.dividedBy(totalWords);
+    public TimeSeries totalCountHistory() {
+        TimeSeries tCountHistorycopy = (TimeSeries) totalCountHistory.clone();
+        return tCountHistorycopy;
     }
 
-    public TimeSeries weightHistory (String word){
-        if (!wordMap.containsKey(word)) {
-            return new TimeSeries();
-        }
-
-        TimeSeries wordData = wordMap.get(word);
-        return wordData;
+    public TimeSeries weightHistory(String word, int startYear, int endYear) {
+        TimeSeries wCount = countHistory(word, startYear, endYear);
+        TimeSeries totalCount = new TimeSeries(totalCountHistory, startYear, endYear);
+        return wCount.dividedBy(totalCount);
     }
 
-    public TimeSeries summedWeightHistory (Collection < String > words,int startYear, int endYear){
+    public TimeSeries weightHistory(String word) {
+        return weightHistory(word, Integer.MIN_VALUE, Integer.MAX_VALUE);
+    }
+
+    public TimeSeries summedWeightHistory(Collection<String> words, int startYear, int endYear) {
         TimeSeries summedHistory = new TimeSeries();
 
-        for (int year = startYear; year <= endYear; year++) {
-            double totalRelativeFrequency = 0.0;
-            for (String word : words) {
-                if (wordMap.containsKey(word) && yearTotals.containsKey(year)) {
-                    TimeSeries data = wordMap.get(word);
-                    double count = data.containsKey(year) ? data.get(year) : 0.0;
-                    double totalWords = yearTotals.get(year);
-
-                    double relativeFrequency = (totalWords != 0.0) ? count / totalWords : 0.0;
-                    totalRelativeFrequency += relativeFrequency;
-                }
+        for (String word : words) {
+            if (wordMap.containsKey(word)) {
+                TimeSeries wH = weightHistory(word, startYear, endYear);
+                summedHistory = summedHistory.plus(wH);
             }
-
-            summedHistory.put(year, totalRelativeFrequency);
         }
-
         return summedHistory;
     }
 
     public TimeSeries summedWeightHistory (Collection < String > words) {
-        TimeSeries summedHistory = new TimeSeries();
-
-        for (int year : years()) {
-            double totalRelativeFrequency = 0.0;
-            for (String word : words) {
-                if (wordMap.containsKey(word)) {
-                    TimeSeries wordData = wordMap.get(word);
-                    double count = wordData.containsKey(year) ? wordData.get(year) : 0.0;
-                    double totalWords = yearTotals.containsKey(year) ? yearTotals.get(year) : 0.0;
-
-                    double relativeFrequency = (totalWords != 0.0) ? count / totalWords : 0.0;
-                    totalRelativeFrequency += relativeFrequency;
-                }
-            }
-
-            summedHistory.put(year, totalRelativeFrequency);
-        }
-
-        return summedHistory;
+        return summedWeightHistory(words, Integer.MIN_VALUE, Integer.MAX_VALUE);
     }
 
     private int getFirstYear() {
