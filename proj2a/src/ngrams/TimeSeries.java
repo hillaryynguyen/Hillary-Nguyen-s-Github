@@ -6,6 +6,7 @@ import java.util.TreeMap;
 import java.util.Map;
 
 
+
 /**
  * An object for mapping a year number (e.g. 1996) to numerical data. Provides
  * utility methods useful for data analysis.
@@ -30,7 +31,6 @@ public class TimeSeries extends TreeMap<Integer, Double> {
      */
     public TimeSeries(TimeSeries ts, int startYear, int endYear) {
         super();
-
         for (Map.Entry<Integer, Double> entry : ts.entrySet()) {
             int year = entry.getKey();
             if (year >= startYear && year <= endYear) {
@@ -88,22 +88,17 @@ public class TimeSeries extends TreeMap<Integer, Double> {
      */
     public TimeSeries dividedBy(TimeSeries ts) {
         TimeSeries result = new TimeSeries();
-
         for (int year : years()) {
             if (!ts.containsKey(year)) {
                 throw new IllegalArgumentException("Missing year in TS: " + year);
             }
-
             double thisValue = get(year);
             double tsValue = ts.get(year);
-
             if (tsValue == 0.0) {
                 throw new IllegalArgumentException("Division by zero at year " + year);
             }
-
             result.put(year, thisValue / tsValue);
         }
-
         return result;
     }
 
@@ -116,4 +111,5 @@ public class TimeSeries extends TreeMap<Integer, Double> {
         }
     }
 }
+
 
