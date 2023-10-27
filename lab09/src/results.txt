@@ -1,0 +1,91 @@
+//InsertRandomSpeedTest.java
+
+This program inserts random Strings of length L
+ into different types of maps as <String, Integer> pairs.
+
+What would you like L to be?: 1
+
+Enter # strings to insert into ULLMap: 5
+ULLMap: 0.00 sec
+
+Enter # strings to insert into your MyHashMap: 7
+MyHashMap: 0.00 sec
+
+Enter # strings to insert into Java's HashMap: 4
+Java's Built-in HashMap: 0.00 sec
+
+Would you like to try more timed-tests? (y/n)y
+
+Enter # strings to insert into ULLMap: 6
+ULLMap: 0.00 sec
+
+Enter # strings to insert into your MyHashMap: 5
+MyHashMap: 0.00 sec
+
+Enter # strings to insert into Java's HashMap: 4
+Java's Built-in HashMap: 0.00 sec
+
+Would you like to try more timed-tests? (y/n)3
+
+Enter # strings to insert into ULLMap: 2
+ULLMap: 0.00 sec
+
+Enter # strings to insert into your MyHashMap: 1
+MyHashMap: 0.00 sec
+
+Enter # strings to insert into Java's HashMap: 4
+Java's Built-in HashMap: 0.00 sec
+
+Would you like to try more timed-tests? (y/n)
+
+
+//InsertInOrderSpeedTest.java
+
+This program inserts lexicographically increasing Stringsinto Maps as <String, Integer> pairs.
+
+Enter # strings to insert into ULLMap: 3
+ULLMap: 0.00 sec
+
+Enter # strings to insert into MyHashMap: 4
+MyHashMap: 0.00 sec
+
+Enter # strings to insert into Java's HashMap: 1
+Java's Built-in HashMap: 0.00 sec
+
+Would you like to try more timed-tests? (y/n): y
+
+Enter # strings to insert into ULLMap: 7
+ULLMap: 0.00 sec
+
+Enter # strings to insert into MyHashMap: 8
+MyHashMap: 0.00 sec
+
+Enter # strings to insert into Java's HashMap: 9
+Java's Built-in HashMap: 0.00 sec
+
+Would you like to try more timed-tests? (y/n):
+
+//BucketsSpeedTest
+
+This program inserts random Strings of length L
+ into different types of maps as <String, Integer> pairs.
+
+What would you like L to be?: 5
+
+Enter # strings to insert into each map: 4
+MyHashMap with ArrayList buckets: 0.00 sec
+MyHashMap with LinkedList buckets: 0.00 sec
+MyHashMap with HashSet buckets: 0.00 sec
+MyHashMap with Stack buckets: 0.00 sec
+MyHashMap with ArrayDeque buckets: 0.00 sec
+
+Would you like to try more timed-tests? (y/n)y
+
+Enter # strings to insert into each map: 7
+MyHashMap with ArrayList buckets: 0.00 sec
+MyHashMap with LinkedList buckets: 0.00 sec
+MyHashMap with HashSet buckets: 0.00 sec
+MyHashMap with Stack buckets: 0.00 sec
+MyHashMap with ArrayDeque buckets: 0.00 sec
+
+Would you like to try more timed-tests? (y/n)
