@@ -9,7 +9,7 @@ public class AutograderBuddy {
             String wordFile, String countFile,
             String synsetFile, String hyponymFile) {
 
-        WordNetGraph wordNetGraph = new WordNetGraph(synsetFile, hyponymFile);
+        WordNetGraph wordNetGraph = new WordNetGraph(synsetFile, hyponymFile, wordFile);
 
         // Create an instance of HyponymsHandler and pass the WordNetGraph instance
         HyponymsHandler hyponymsHandler = new HyponymsHandler(wordNetGraph);
@@ -18,5 +18,6 @@ public class AutograderBuddy {
         return hyponymsHandler;
 
         //throw new RuntimeException("Please fill out AutograderBuddy.java!");
+
     }
 }
