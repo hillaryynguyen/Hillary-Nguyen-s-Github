@@ -1,49 +1,84 @@
 package main;
 
-import browser.NgordnetQueryHandler;
-import browser.NgordnetQuery;
-import ngrams.NGramMap;
-import java.util.List;
-import com.google.gson.Gson;
-import spark.Request;
-import spark.Response;
-
 import java.util.*;
+import java.util.*;
+import java.util.stream.Collectors;
 
+import browser.NgordnetQueryHandler;
+import com.google.gson.Gson;
+import ngrams.NGramMap;
+import ngrams.TimeSeries;
+import main.WordNet;
+import browser.NgordnetQuery;
 
 public class HyponymsHandler extends NgordnetQueryHandler {
-    private WordNetGraph wordNetGraph;
+    private WordNet wordNet;
+    private final NGramMap nGramMap;
+    private final Gson gson = new Gson();
 
-    public HyponymsHandler(WordNetGraph wordNetGraph) {
-        this.wordNetGraph = wordNetGraph;
-
+    public HyponymsHandler(String synsetsFile, String hyponymsFile, NGramMap nGramMap) {
+        this.wordNet = new WordNet(synsetsFile, hyponymsFile); // Now WordNet is populated
+        this.nGramMap = nGramMap;
     }
+
+    // ... (other parts of the HyponymsHandler class)
+
     @Override
-    public String handle(NgordnetQuery q) {
-        List<String> words = q.words();
-        int startYear = q.startYear();
-        int endYear = q.endYear();
-        int k = q.k();
+    public String handle(NgordnetQuery query) {
+        List<String> words = query.words();
+        int startYear = query.startYear();
+        int endYear = query.endYear();
+        int k = query.k();
 
-        // 1. Find hyponyms based on the words
-        Set<String> hyponyms = wordNetGraph.findHyponymsForWords(words);
+        // Get common hyponyms for the list of words
+        Set<String> hyponyms = wordNet.getCommonHyponyms(words);
 
-        // 2. Apply filtering based on startYear and endYear if needed
-        // (You would need additional data or logic to filter by time frame)
+        // If k > 0, find the k most common hyponyms using NGramMap
+        if (k > 0) {
+            // Create a map to hold the count for each hyponym
+            Map<String, Long> hyponymCounts = new HashMap<>();
 
-        // 3. Limit the results to the top k hyponyms if k > 0
-        if (k > 0 && hyponyms.size() > k) {
-            List<String> topHyponyms = new ArrayList<>(hyponyms).subList(0, k);
-            return formatResults(topHyponyms); // Format results as needed
-        } else {
-            return formatResults(new ArrayList<>(hyponyms)); // Format results as needed
+            for (String hyponym : hyponyms) {
+                // Use NGramMap to get the count history for each hyponym
+                TimeSeries countHistory = nGramMap.countHistory(hyponym, startYear, endYear);
+                // Calculate the total count over the specified time range
+                long totalCount = countHistory.values().stream().mapToLong(Number::longValue).sum();
+                // Only add the hyponym if its count is greater than zero
+                if (totalCount > 0) {
+                    hyponymCounts.put(hyponym, totalCount);
+                }
+            }
+
+            // Get the top k hyponyms sorted by count
+            hyponyms = getTopKHyponyms(hyponymCounts, k);
         }
+
+        // Convert the set of hyponyms to a sorted list
+        List<String> sortedHyponyms = new ArrayList<>(hyponyms);
+        Collections.sort(sortedHyponyms);
+
+        // Convert the sorted list to JSON and return
+        return gson.toJson(sortedHyponyms);
     }
 
-    private String formatResults(List<String> results) {
-        // Format the results as needed. For example, convert to JSON or plain text.
-        // You can use a JSON library (e.g., Gson) for JSON formatting.
-        return new Gson().toJson(results); // Format as JSON
-
+    // Helper method to get the top k hyponyms sorted by count
+    private Set<String> getTopKHyponyms(Map<String, Long> hyponymCounts, int k) {
+        return hyponymCounts.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .limit(k)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toCollection(LinkedHashSet::new)); // Use LinkedHashSet to preserve order
     }
+
+
+    // In the HyponymsHandler class
+    private long getTotalCountFromTimeSeries(TimeSeries history) {
+        // Assuming TimeSeries provides a way to iterate over its entries
+        long totalCount = 0;
+        for (Double count : history.values()) {
+            totalCount += count;
+        }
+        return totalCount;
+    }
+
 }
