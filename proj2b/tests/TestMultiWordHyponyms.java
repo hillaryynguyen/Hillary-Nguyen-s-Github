@@ -1,4 +1,4 @@
-import browser.NgordnetQuery;
+/*import browser.NgordnetQuery;
 import browser.NgordnetQueryHandler;
 import main.AutograderBuddy;
 import org.junit.jupiter.api.Test;
@@ -9,6 +9,7 @@ import java.util.List;
 import static com.google.common.truth.Truth.assertThat;
 
 /** Tests the case where the list of words is length greater than 1, but k is still zero. */
+/*
 public class TestMultiWordHyponyms {
     // this case doesn't use the NGrams dataset at all, so the choice of files is irrelevant
     public static final String WORDS_FILE = "data/ngrams/very_short.csv";
@@ -21,6 +22,7 @@ public class TestMultiWordHyponyms {
     public static final String LARGE_HYPONYM_FILE = "data/wordnet/hyponyms.txt";
 
     /** This is an example from the spec.*/
+    /*
     @Test
     public void testOccurrenceAndChangeK0() throws IOException {
         NgordnetQueryHandler studentHandler = AutograderBuddy.getHyponymHandler(

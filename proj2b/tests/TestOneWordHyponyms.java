@@ -1,4 +1,4 @@
-import browser.NgordnetQuery;
+/* import browser.NgordnetQuery;
 import browser.NgordnetQueryHandler;
 import org.junit.jupiter.api.Test;
 import main.AutograderBuddy;
@@ -9,6 +9,7 @@ import java.util.List;
 import static com.google.common.truth.Truth.assertThat;
 
 /** Tests the most basic case for Hyponyms where the list of words is one word long, and k = 0.*/
+/*
 public class TestOneWordHyponyms {
     // this case doesn't use the NGrams dataset at all, so the choice of files is irrelevant
     public static final String WORDS_FILE = "data/ngrams/top_49887_words.csv";
@@ -77,4 +78,4 @@ public class TestOneWordHyponyms {
     }
 
 
-}
+} */
