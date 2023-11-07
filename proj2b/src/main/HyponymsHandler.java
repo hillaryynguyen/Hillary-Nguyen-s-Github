@@ -1,4 +1,3 @@
-
 package main;
 
 import java.util.*;
@@ -61,10 +60,9 @@ public class HyponymsHandler extends NgordnetQueryHandler {
 
     // Helper method to get the top k hyponyms sorted by count
     private Set<String> getTopKHyponyms(Map<String, Long> hyponymCounts, int k) {
-        return hyponymCounts.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-                .limit(k).map(Map.Entry::getKey).collect(Collectors.toCollection(LinkedHashSet::new));
+        return hyponymCounts.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).limit(k)
+                .map(Map.Entry::getKey).collect(Collectors.toCollection(LinkedHashSet::new));
     }
-
 
     // In the HyponymsHandler class
     private long getTotalCountFromTimeSeries(TimeSeries history) {
@@ -75,5 +73,4 @@ public class HyponymsHandler extends NgordnetQueryHandler {
         }
         return totalCount;
     }
-
 }
