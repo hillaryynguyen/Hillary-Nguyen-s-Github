@@ -1,13 +1,6 @@
-package main;
+package wordnet;
 
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.HashSet;
 import java.util.*;
-
-
 
 public class Graph<T> {
     private Map<T, Set<T>> edges = new HashMap<>();
@@ -39,5 +32,3 @@ public class Graph<T> {
         }
     }
 }
-
-

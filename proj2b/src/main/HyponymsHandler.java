@@ -4,12 +4,12 @@ import java.util.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import browser.NgordnetQueryHandler;
 import com.google.gson.Gson;
 import ngrams.NGramMap;
 import ngrams.TimeSeries;
-import main.WordNet;
+import wordnet.WordNet;
 import browser.NgordnetQuery;
+import browser.NgordnetQueryHandler;
 
 public class HyponymsHandler extends NgordnetQueryHandler {
     private WordNet wordNet;

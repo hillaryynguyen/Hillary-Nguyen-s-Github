@@ -1,8 +1,8 @@
 package main;
 
-import main.HyponymsHandler;
 import browser.NgordnetQueryHandler;
 import ngrams.NGramMap;
+import main.HyponymsHandler;
 
 public class AutograderBuddy {
     /** Returns a HyponymHandler */

@@ -6,7 +6,6 @@ import browser.NgordnetServer;
 import java.util.ArrayList;
 import main.HyponymsHandler; // Import your HyponymsHandler class
 import ngrams.NGramMap;
-
 public class Main {
     public static void main(String[] args) {
         NgordnetServer hns = new NgordnetServer();
@@ -27,7 +26,7 @@ public class Main {
         hns.startUp();
         hns.register("history", new DummyHistoryHandler());
         hns.register("historytext", new DummyHistoryTextHandler());
-        hns.register("hyponyms", new HyponymsHandler(synsets, hyponyms, ngm));
+        hns.register("hyponyms", new HyponymsHandler(synsets,hyponyms,ngm));
 
         System.out.println("Finished server startup! Visit http://localhost:4567/ngordnet.html");
     }

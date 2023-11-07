@@ -1,4 +1,4 @@
-package main;
+package wordnet;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -123,5 +123,3 @@ public class WordNet {
 
     // Methods to get hyponyms will be added here
 }
-
-
