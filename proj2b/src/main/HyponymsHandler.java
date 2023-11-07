@@ -8,6 +8,7 @@ import ngrams.TimeSeries;
 import browser.NgordnetQuery;
 import browser.NgordnetQueryHandler;
 import wordnet.WordNet;
+import java.util.stream.Stream;
 
 public class HyponymsHandler extends NgordnetQueryHandler {
     private final WordNet wordNet;
@@ -60,11 +61,10 @@ public class HyponymsHandler extends NgordnetQueryHandler {
 
     // Helper method to get the top k hyponyms sorted by count
     private Set<String> getTopKHyponyms(Map<String, Long> hyponymCounts, int k) {
-        return hyponymCounts.entrySet().stream()
-                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-                .limit(k)
-                .map(Map.Entry::getKey)
-                .collect(Collectors.toCollection(LinkedHashSet::new));
+        Stream<Map.Entry<String, Long>> entryStream = hyponymCounts.entrySet().stream();
+        Stream<Map.Entry<String, Long>> sortedStream = entryStream.sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()));
+        Stream<String> keyStream = sortedStream.limit(k).map(Map.Entry::getKey);
+        return keyStream.collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     // In the HyponymsHandler class
