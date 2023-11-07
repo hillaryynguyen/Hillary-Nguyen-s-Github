@@ -1,5 +1,7 @@
 package main;
 
+
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -11,7 +13,7 @@ import browser.NgordnetQueryHandler;
 import wordnet.WordNet;
 
 public class HyponymsHandler extends NgordnetQueryHandler {
-    private WordNet wordNet;
+    private final WordNet wordNet;
     private final NGramMap nGramMap;
     private final Gson gson = new Gson();
 
@@ -54,21 +56,14 @@ public class HyponymsHandler extends NgordnetQueryHandler {
         // Convert the set of hyponyms to a sorted list
         List<String> sortedHyponyms = new ArrayList<>(hyponyms);
         Collections.sort(sortedHyponyms);
-
-        String hyponymsString = sortedHyponyms.stream()
-                .map(Object::toString)
-                .collect(Collectors.joining(", "));
+        String hyponymsString = sortedHyponyms.stream().map(Object::toString).collect(Collectors.joining(", "));
 
         return "[" + hyponymsString + "]";
     }
 
     // Helper method to get the top k hyponyms sorted by count
     private Set<String> getTopKHyponyms(Map<String, Long> hyponymCounts, int k) {
-        return hyponymCounts.entrySet().stream()
-                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-                .limit(k)
-                .map(Map.Entry::getKey)
-                .collect(Collectors.toCollection(LinkedHashSet::new)); // Use LinkedHashSet to preserve order
+        return hyponymCounts.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).limit(k).map(Map.Entry::getKey).collect(Collectors.toCollection(LinkedHashSet::new)); // Use LinkedHashSet to preserve order
     }
 
 

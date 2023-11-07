@@ -11,7 +11,7 @@ import java.util.List;
 
 public abstract class NgordnetQueryHandler implements Route {
     public abstract String handle(browser.NgordnetQuery q);
-    private static final Gson gson = new Gson();
+    private static final Gson GSON = new Gson();
 
     private static List<String> commaSeparatedStringToList(String s) {
         String[] requestedWords = s.split(",");
@@ -30,19 +30,19 @@ public abstract class NgordnetQueryHandler implements Route {
 
         try {
             startYear = Integer.parseInt(qm.get("startYear").value());
-        } catch(RuntimeException e) {
+        } catch (RuntimeException e) {
             startYear = 1900;
         }
 
         try {
             endYear = Integer.parseInt(qm.get("endYear").value());
-        } catch(RuntimeException e) {
+        } catch (RuntimeException e) {
             endYear = 2020;
         }
 
         try {
             k = Integer.parseInt(qm.get("k").value());
-        } catch(RuntimeException e) {
+        } catch (RuntimeException e) {
             k = 0;
         }
 
@@ -54,6 +54,6 @@ public abstract class NgordnetQueryHandler implements Route {
         QueryParamsMap qm = request.queryMap();
         NgordnetQuery nq = readQueryMap(qm);
         String queryResult = handle(nq);
-        return gson.toJson(queryResult);
+        return GSON.toJson(queryResult);
     }
 }

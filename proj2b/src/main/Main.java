@@ -1,9 +1,7 @@
+
 package main;
 
-import browser.NgordnetQuery;
-import browser.NgordnetQueryHandler;
 import browser.NgordnetServer;
-import java.util.ArrayList;
 import ngrams.NGramMap;
 
 public class Main {
@@ -22,7 +20,6 @@ public class Main {
         hns.register("historytext", new DummyHistoryTextHandler());
         // Register your HyponymsHandler
         hns.register("hyponyms", new HyponymsHandler(synsets,hyponyms,ngm));
-
 
         System.out.println("Finished server startup! Visit http://localhost:4567/ngordnet.html");
     }

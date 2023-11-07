@@ -31,7 +31,4 @@ public class TestMultiWordK0Hyponyms {
         assertThat(actual).isEqualTo(expected);
     }
 
-    // TODO: Add more unit tests (including edge case tests) here.
-
-    // TODO: Create similar unit test files for the k != 0 cases.
 }
