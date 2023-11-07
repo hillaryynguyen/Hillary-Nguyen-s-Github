@@ -1,10 +1,8 @@
+
 package main;
-
-
 
 import java.util.*;
 import java.util.stream.Collectors;
-
 import com.google.gson.Gson;
 import ngrams.NGramMap;
 import ngrams.TimeSeries;
@@ -63,7 +61,8 @@ public class HyponymsHandler extends NgordnetQueryHandler {
 
     // Helper method to get the top k hyponyms sorted by count
     private Set<String> getTopKHyponyms(Map<String, Long> hyponymCounts, int k) {
-        return hyponymCounts.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).limit(k).map(Map.Entry::getKey).collect(Collectors.toCollection(LinkedHashSet::new)); // Use LinkedHashSet to preserve order
+        return hyponymCounts.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .limit(k).map(Map.Entry::getKey).collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
 
