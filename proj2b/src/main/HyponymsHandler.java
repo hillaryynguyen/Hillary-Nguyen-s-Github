@@ -1,16 +1,14 @@
 package main;
 
 import java.util.*;
-import java.util.*;
 import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
 import ngrams.NGramMap;
 import ngrams.TimeSeries;
 import wordnet.WordNet;
-import browser.NgordnetQuery;
 import browser.NgordnetQueryHandler;
-
+import browser.NgordnetQuery;
 public class HyponymsHandler extends NgordnetQueryHandler {
     private WordNet wordNet;
     private final NGramMap nGramMap;
