@@ -6,8 +6,10 @@ import browser.NgordnetServer;
 import java.util.ArrayList;
 import main.HyponymsHandler; // Import your HyponymsHandler class
 import ngrams.NGramMap;
+import java.io.IOException;
+
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         NgordnetServer hns = new NgordnetServer();
         
         /* The following code might be useful to you.

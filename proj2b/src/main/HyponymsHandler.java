@@ -1,82 +1,55 @@
 package main;
 
+import browser.NgordnetQuery;
+import browser.NgordnetQueryHandler;
+import ngrams.NGramMap;
+import ngrams.TimeSeries;
+import com.google.gson.Gson;
+import wordnet.WordNet;
+
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import com.google.gson.Gson;
-import ngrams.NGramMap;
-import ngrams.TimeSeries;
-import wordnet.WordNet;
-import browser.NgordnetQueryHandler;
-import browser.NgordnetQuery;
 public class HyponymsHandler extends NgordnetQueryHandler {
-    private WordNet wordNet;
-    private final NGramMap nGramMap;
-    private final Gson gson = new Gson();
+    private WordNetQueryHandler wordNetQueryHandler;
+    private NGramMap nGramMap;
+    private Gson gson;
 
-    public HyponymsHandler(String synsetsFile, String hyponymsFile, NGramMap nGramMap) {
-        this.wordNet = new WordNet(synsetsFile, hyponymsFile); // Now WordNet is populated
+    public HyponymsHandler(String synsetsFile, String hyponymsFile, NGramMap nGramMap) throws IOException {
+        this.wordNetQueryHandler = new WordNetQueryHandler(synsetsFile, hyponymsFile);
         this.nGramMap = nGramMap;
+        this.gson = new Gson();
     }
-
-    // ... (other parts of the HyponymsHandler class)
 
     @Override
     public String handle(NgordnetQuery query) {
-        List<String> words = query.words();
-        int startYear = query.startYear();
-        int endYear = query.endYear();
-        int k = query.k();
-
-        // Get common hyponyms for the list of words
-        Set<String> hyponyms = wordNet.getCommonHyponyms(words);
-
-        // If k > 0, find the k most common hyponyms using NGramMap
-        if (k > 0) {
-            // Create a map to hold the count for each hyponym
+        Set<String> hyponyms = wordNetQueryHandler.handleQuery(query.words());
+        if (query.k() > 0) {
             Map<String, Long> hyponymCounts = new HashMap<>();
-
             for (String hyponym : hyponyms) {
-                // Use NGramMap to get the count history for each hyponym
-                TimeSeries countHistory = nGramMap.countHistory(hyponym, startYear, endYear);
-                // Calculate the total count over the specified time range
-                long totalCount = countHistory.values().stream().mapToLong(Number::longValue).sum();
-                // Only add the hyponym if its count is greater than zero
+                TimeSeries history = nGramMap.countHistory(hyponym, query.startYear(), query.endYear());
+                long totalCount = history.values().stream().mapToLong(Number::longValue).sum();
                 if (totalCount > 0) {
                     hyponymCounts.put(hyponym, totalCount);
                 }
             }
-
-            // Get the top k hyponyms sorted by count
-            hyponyms = getTopKHyponyms(hyponymCounts, k);
+            hyponyms = getTopKHyponyms(hyponymCounts, query.k());
         }
-
-        // Convert the set of hyponyms to a sorted list
         List<String> sortedHyponyms = new ArrayList<>(hyponyms);
         Collections.sort(sortedHyponyms);
+        String hyponymsString = sortedHyponyms.stream()
+                .map(Object::toString)
+                .collect(Collectors.joining(", "));
 
-        // Convert the sorted list to JSON and return
-        return gson.toJson(sortedHyponyms);
+        return "[" + hyponymsString + "]";
     }
 
-    // Helper method to get the top k hyponyms sorted by count
     private Set<String> getTopKHyponyms(Map<String, Long> hyponymCounts, int k) {
         return hyponymCounts.entrySet().stream()
-                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
                 .limit(k)
                 .map(Map.Entry::getKey)
-                .collect(Collectors.toCollection(LinkedHashSet::new)); // Use LinkedHashSet to preserve order
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
-
-
-    // In the HyponymsHandler class
-    private long getTotalCountFromTimeSeries(TimeSeries history) {
-        // Assuming TimeSeries provides a way to iterate over its entries
-        long totalCount = 0;
-        for (Double count : history.values()) {
-            totalCount += count;
-        }
-        return totalCount;
-    }
-
 }

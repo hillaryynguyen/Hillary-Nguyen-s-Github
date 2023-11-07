@@ -4,122 +4,80 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 
+/**
+ * Represents the WordNet, managing synsets and their hyponym relationships.
+ */
 public class WordNet {
-    private Map<Integer, Synset> synsets = new HashMap<>();
-    private Map<String, Set<Integer>> wordToSynsetIds = new HashMap<>();
-    private Graph<Integer> hyponymGraph = new Graph<>();
+    private final Map<Integer, Set<String>> synsetMap; // Maps synset ID to a set of nouns
+    private final Map<String, Set<Integer>> nounToSynsetIdMap; // Maps a noun to its synset IDs
+    private final Graph<Integer> hyponymGraph; // Graph to store hyponym relationships
+
     public WordNet(String synsetsFile, String hyponymsFile) {
-        this.hyponymGraph = new Graph<>();
-        parseSynsets(synsetsFile);
-        parseHyponyms(hyponymsFile);
+        synsetMap = new HashMap<>();
+        nounToSynsetIdMap = new HashMap<>();
+        hyponymGraph = new Graph<>();
+        loadSynsets(synsetsFile);
+        loadHyponyms(hyponymsFile);
     }
 
-    private void parseSynsets(String synsetsFile) {
+    private void loadSynsets(String synsetsFile) {
         try (Scanner scanner = new Scanner(new File(synsetsFile))) {
             while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                String[] parts = line.split(",");
-                int id = Integer.parseInt(parts[0]);
-                String[] nounList = parts[1].split(" ");
-                Set<String> nouns = new HashSet<>(Arrays.asList(nounList));
-                String definition = parts[2]; // May need more processing if definitions contain commas
-
-                // Add the synset
-                Synset synset = new Synset(id, nouns, definition);
-                addSynset(synset);
-
-                // Map each noun to the synset ID
-                for (String noun : nouns) {
-                    wordToSynsetIds.computeIfAbsent(noun, k -> new HashSet<>()).add(id);
-                }
+                processSynsetLine(scanner.nextLine());
             }
         } catch (FileNotFoundException e) {
-            e.printStackTrace(); // Handle missing file
+            e.printStackTrace();
         }
     }
 
+    private void processSynsetLine(String line) {
+        String[] parts = line.split(",");
+        int id = Integer.parseInt(parts[0]);
+        Set<String> nouns = new HashSet<>(Arrays.asList(parts[1].split(" ")));
 
-    private void parseHyponyms(String hyponymsFile) {
+        synsetMap.put(id, nouns);
+        nouns.forEach(noun -> nounToSynsetIdMap.computeIfAbsent(noun, k -> new HashSet<>()).add(id));
+    }
+
+    private void loadHyponyms(String hyponymsFile) {
         try (Scanner scanner = new Scanner(new File(hyponymsFile))) {
             while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                String[] parts = line.split(",");
-                int synsetId = Integer.parseInt(parts[0]);
-                for (int i = 1; i < parts.length; i++) {
-                    int hyponymId = Integer.parseInt(parts[i]);
-                    // Add an edge from synsetId to hyponymId
-                    hyponymGraph.addEdge(synsetId, hyponymId);
-                }
+                processHyponymLine(scanner.nextLine());
             }
         } catch (FileNotFoundException e) {
-            e.printStackTrace(); // Handle missing file
+            e.printStackTrace();
+        }
+    }
+
+    private void processHyponymLine(String line) {
+        String[] parts = line.split(",");
+        int synsetId = Integer.parseInt(parts[0]);
+        for (int i = 1; i < parts.length; i++) {
+            int hyponymId = Integer.parseInt(parts[i]);
+            hyponymGraph.addEdge(synsetId, hyponymId);
         }
     }
 
     public Set<String> getCommonHyponyms(List<String> words) {
-        Set<String> commonHyponyms = null; // This will eventually hold the common hyponyms
-
+        Set<String> commonHyponyms = new HashSet<>();
         for (String word : words) {
-            Set<String> hyponymsOfWord = getHyponymsForSingleWord(word);
-
-            if (commonHyponyms == null) {
-                // For the first word, initialize commonHyponyms with its hyponyms
-                commonHyponyms = new HashSet<>(hyponymsOfWord);
+            Set<String> hyponyms = getHyponymsForWord(word);
+            if (commonHyponyms.isEmpty()) {
+                commonHyponyms.addAll(hyponyms);
             } else {
-                // For subsequent words, retain only common hyponyms
-                commonHyponyms.retainAll(hyponymsOfWord);
+                commonHyponyms.retainAll(hyponyms);
             }
         }
-
-        return commonHyponyms != null ? commonHyponyms : Collections.emptySet();
+        return commonHyponyms;
     }
 
-    private Set<String> getHyponymsForSingleWord(String word) {
-        Set<String> result = new HashSet<>();
-        if (wordToSynsetIds.containsKey(word)) {
-            for (Integer synsetId : wordToSynsetIds.get(word)) {
-                Set<Integer> hyponymIds = hyponymGraph.getAllConnectedNodes(synsetId);
-                for (Integer hyponymId : hyponymIds) {
-                    Synset synset = synsets.get(hyponymId);
-                    if (synset != null) {
-                        result.addAll(synset.getNouns());
-                    }
-                }
-            }
-        }
-        return result;
+    private Set<String> getHyponymsForWord(String word) {
+        Set<String> hyponyms = new HashSet<>();
+        nounToSynsetIdMap.getOrDefault(word, Collections.emptySet())
+                .forEach(synsetId -> {
+                    Set<Integer> connectedNodes = hyponymGraph.getConnectedNodes(synsetId);
+                    connectedNodes.forEach(hyponymId -> hyponyms.addAll(synsetMap.getOrDefault(hyponymId, Collections.emptySet())));
+                });
+        return hyponyms;
     }
-
-    public void addSynset(Synset synset) {
-        synsets.put(synset.getId(), synset);
-        for (String noun : synset.getNouns()) {
-            wordToSynsetIds.computeIfAbsent(noun, k -> new HashSet<>()).add(synset.getId());
-        }
-        hyponymGraph.addNode(synset.getId());
-    }
-
-    public void addHyponym(int synsetId, int hyponymId) {
-        hyponymGraph.addEdge(synsetId, hyponymId);
-    }
-
-    public Set<String> getHyponyms(List<String> words) {
-        Set<String> result = new HashSet<>();
-        for (String word : words) { // Iterate over each word in the list
-            if (wordToSynsetIds.containsKey(word)) {
-                Set<Integer> synsetIds = wordToSynsetIds.get(word);
-                for (Integer synsetId : synsetIds) {
-                    Set<Integer> hyponymIds = hyponymGraph.getAllConnectedNodes(synsetId);
-                    for (Integer hyponymId : hyponymIds) {
-                        Synset synset = synsets.get(hyponymId);
-                        if (synset != null) {
-                            result.addAll(synset.getNouns());
-                        }
-                    }
-                }
-            }
-        }
-        return result;
-    }
-
-    // Methods to get hyponyms will be added here
 }

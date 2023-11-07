@@ -3,32 +3,32 @@ package wordnet;
 import java.util.*;
 
 public class Graph<T> {
-    private Map<T, Set<T>> edges = new HashMap<>();
+    private final Map<T, Set<T>> adjacencyList;
+
+    public Graph() {
+        adjacencyList = new HashMap<>();
+    }
 
     public void addNode(T node) {
-        edges.putIfAbsent(node, new HashSet<>());
+        adjacencyList.putIfAbsent(node, new HashSet<>());
     }
 
-    public void addEdge(T from, T to) {
-        edges.computeIfAbsent(from, k -> new HashSet<>()).add(to);
+    public void addEdge(T source, T destination) {
+        adjacencyList.computeIfAbsent(source, k -> new HashSet<>()).add(destination);
     }
 
-    public Set<T> getAllConnectedNodes(T start) {
-        Set<T> connectedNodes = new HashSet<>();
-        dfs(start, connectedNodes);
-        return connectedNodes;
+    public Set<T> getConnectedNodes(T startNode) {
+        Set<T> visited = new HashSet<>();
+        performDepthFirstSearch(startNode, visited);
+        return visited;
     }
 
-    private void dfs(T node, Set<T> connectedNodes) {
-        // Mark the node as visited by adding it to the set
-        connectedNodes.add(node);
-        // For every connected node, if it's not already visited, continue the DFS
-        if (edges.containsKey(node)) {
-            for (T neighbor : edges.get(node)) {
-                if (!connectedNodes.contains(neighbor)) {
-                    dfs(neighbor, connectedNodes);
-                }
+    private void performDepthFirstSearch(T currentNode, Set<T> visited) {
+        visited.add(currentNode);
+        adjacencyList.getOrDefault(currentNode, Collections.emptySet()).forEach(neighbor -> {
+            if (!visited.contains(neighbor)) {
+                performDepthFirstSearch(neighbor, visited);
             }
-        }
+        });
     }
 }
