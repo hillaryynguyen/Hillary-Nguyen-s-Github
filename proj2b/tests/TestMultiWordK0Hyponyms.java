@@ -3,6 +3,7 @@ import browser.NgordnetQueryHandler;
 import main.AutograderBuddy;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -19,7 +20,7 @@ public class TestMultiWordK0Hyponyms {
 
     /** This is an example from the spec.*/
     @Test
-    public void testOccurrenceAndChangeK0() {
+    public void testOccurrenceAndChangeK0() throws IOException {
         NgordnetQueryHandler studentHandler = AutograderBuddy.getHyponymHandler(
                 WORDS_FILE, TOTAL_COUNTS_FILE, SMALL_SYNSET_FILE, SMALL_HYPONYM_FILE);
         List<String> words = List.of("occurrence", "change");

@@ -3,6 +3,7 @@ import browser.NgordnetQueryHandler;
 import main.AutograderBuddy;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -21,7 +22,7 @@ public class TestMultiWordHyponyms {
 
     /** This is an example from the spec.*/
     @Test
-    public void testOccurrenceAndChangeK0() {
+    public void testOccurrenceAndChangeK0() throws IOException {
         NgordnetQueryHandler studentHandler = AutograderBuddy.getHyponymHandler(
                 WORDS_FILE, TOTAL_COUNTS_FILE, SMALL_SYNSET_FILE, SMALL_HYPONYM_FILE);
         List<String> words = List.of("occurrence", "change");
@@ -33,7 +34,7 @@ public class TestMultiWordHyponyms {
     }
 
     @Test
-    public void testMultipleWordHyponymsWithK() {
+    public void testMultipleWordHyponymsWithK() throws IOException {
         NgordnetQueryHandler studentHandler = AutograderBuddy.getHyponymHandler(
                 LARGE_WORDS_FILE, TOTAL_COUNTS_FILE, LARGE_SYNSET_FILE,LARGE_HYPONYM_FILE);
         NgordnetQuery query = new NgordnetQuery(List.of("food","cake"), 1950, 1990, 5);
@@ -42,7 +43,7 @@ public class TestMultiWordHyponyms {
         assertThat(actual).isEqualTo(expected);
     }
     @Test
-    public void testMultipleWordsHyponymsWithK0() {
+    public void testMultipleWordsHyponymsWithK0() throws IOException {
         NgordnetQueryHandler studentHandler = AutograderBuddy.getHyponymHandler(
                 WORDS_FILE, TOTAL_COUNTS_FILE, SMALL_SYNSET_FILE, SMALL_HYPONYM_FILE);
         NgordnetQuery query = new NgordnetQuery(List.of("change", "occurrence"), 0, 0, 0);

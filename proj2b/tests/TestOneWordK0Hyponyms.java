@@ -3,6 +3,7 @@ import browser.NgordnetQueryHandler;
 import org.junit.jupiter.api.Test;
 import main.AutograderBuddy;
 
+import java.io.IOException;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -16,7 +17,7 @@ public class TestOneWordK0Hyponyms {
     public static final String SMALL_HYPONYM_FILE = "data/wordnet/hyponyms16.txt";
 
     @Test
-    public void testActK0() {
+    public void testActK0() throws IOException {
         NgordnetQueryHandler studentHandler = AutograderBuddy.getHyponymHandler(
                 WORDS_FILE, TOTAL_COUNTS_FILE, SMALL_SYNSET_FILE, SMALL_HYPONYM_FILE);
         List<String> words = List.of("act");

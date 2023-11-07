@@ -3,6 +3,7 @@ import browser.NgordnetQueryHandler;
 import org.junit.jupiter.api.Test;
 import main.AutograderBuddy;
 
+import java.io.IOException;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -21,7 +22,7 @@ public class TestOneWordHyponyms {
 
 
     @Test
-    public void testOccurrenceAndChangeK0() {
+    public void testOccurrenceAndChangeK0() throws IOException {
         NgordnetQueryHandler studentHandler = AutograderBuddy.getHyponymHandler(
                 SMALL_WORDS_FILE, TOTAL_COUNTS_FILE, SMALL_SYNSET_FILE, SMALL_HYPONYM_FILE);
         List<String> words = List.of("occurrence", "change");
@@ -33,7 +34,7 @@ public class TestOneWordHyponyms {
     }
 
     @Test
-    public void testActK0() {
+    public void testActK0() throws IOException {
         NgordnetQueryHandler studentHandler = AutograderBuddy.getHyponymHandler(
                 SMALL_WORDS_FILE, TOTAL_COUNTS_FILE, SMALL_SYNSET_FILE, SMALL_HYPONYM_FILE);
         List<String> words = List.of("act");
@@ -45,7 +46,7 @@ public class TestOneWordHyponyms {
     }
 
     @Test
-    public void testSingleWordHyponymsWithK() {
+    public void testSingleWordHyponymsWithK() throws IOException {
         NgordnetQueryHandler studentHandler = AutograderBuddy.getHyponymHandler(
                 WORDS_FILE, TOTAL_COUNTS_FILE, SYNSET_FILE, HYPONYM_FILE);
         // Setup your handler with necessary file paths
@@ -56,7 +57,7 @@ public class TestOneWordHyponyms {
     }
 
     @Test
-    public void testHyponymsWithNonexistentWord() {
+    public void testHyponymsWithNonexistentWord() throws IOException {
         NgordnetQueryHandler studentHandler = AutograderBuddy.getHyponymHandler(
                 WORDS_FILE, TOTAL_COUNTS_FILE, SMALL_SYNSET_FILE, SMALL_HYPONYM_FILE);
         NgordnetQuery query = new NgordnetQuery(List.of("nonexistentword"), 0, 0, 0);
@@ -66,7 +67,7 @@ public class TestOneWordHyponyms {
     }
 
     @Test
-    public void testHyponymsWithInvalidK() {
+    public void testHyponymsWithInvalidK() throws IOException {
         NgordnetQueryHandler studentHandler = AutograderBuddy.getHyponymHandler(
                 WORDS_FILE, TOTAL_COUNTS_FILE, SMALL_SYNSET_FILE, SMALL_HYPONYM_FILE);
         NgordnetQuery query = new NgordnetQuery(List.of("change"), 0, 0, -5);
