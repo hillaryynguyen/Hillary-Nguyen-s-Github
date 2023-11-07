@@ -62,7 +62,8 @@ public class HyponymsHandler extends NgordnetQueryHandler {
     // Helper method to get the top k hyponyms sorted by count
     private Set<String> getTopKHyponyms(Map<String, Long> hyponymCounts, int k) {
         Stream<Map.Entry<String, Long>> entryStream = hyponymCounts.entrySet().stream();
-        Stream<Map.Entry<String, Long>> sortedStream = entryStream.sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()));
+        Stream<Map.Entry<String, Long>> sortedStream = entryStream.sorted(
+                Map.Entry.comparingByValue(Comparator.reverseOrder()));
         Stream<String> keyStream = sortedStream.limit(k).map(Map.Entry::getKey);
         return keyStream.collect(Collectors.toCollection(LinkedHashSet::new));
     }
