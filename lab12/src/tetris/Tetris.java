@@ -113,10 +113,10 @@ public class Tetris {
                 movement.tryMove(0,-1);
             } else if (key == 'd') {
                 movement.tryMove(1,0);
-            } else if (key == 'q') {
-                movement.rotateLeft();
             } else if (key == 'w') {
                 movement.rotateRight();
+            } else if (key == 'q') {
+                movement.rotateLeft();
             }
         }
 
@@ -151,14 +151,14 @@ public class Tetris {
         int linesCleared = 0;
 
         for (int y = 0; y < GAME_HEIGHT; y++) {
-            boolean isRowComplete = true;
+            boolean rowComplete = true;
             for (int x = 0; x < WIDTH; x++) {
                 if (board[x][y] == Tileset.NOTHING) {
-                    isRowComplete = false;
+                    rowComplete = false;
                     break;
                 }
             }
-            if (isRowComplete) {
+            if (rowComplete) {
                 moveDownClearRow(y);
                 linesCleared = linesCleared + 1;
                 y = y - 1;
@@ -189,10 +189,8 @@ public class Tetris {
         resetActionTimer();
         resetFrameTimer();
 
-        // TODO: First spawn a piece
         spawnPiece();
 
-        // TODO: Set up your game loop. The game should keep running until the game is over.
         // Use helper methods inside your game loop, according to the spec description.
         while (!isGameOver()) {
             // Your code here
@@ -223,7 +221,6 @@ public class Tetris {
      * Renders the score using the StdDraw library.
      */
     private void renderScore() {
-        // TODO: Use the StdDraw library to draw out the score.
         // Set the color of the text to white
         StdDraw.setPenColor(255, 255, 255);
         int xPosition = 7;
